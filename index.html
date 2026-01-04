@@ -160,44 +160,74 @@
         evt.currentTarget.classList.add("active");
     }
 
-    async function submitSale() {
-        const phone = document.getElementById('customer_phone').value;
-        const staff = document.getElementById('staff').value;
-        const amount = Number(document.getElementById('amount').value);
-        const payment = document.getElementById('payment').value;
-        const res = document.getElementById('saleResult');
+   async function submitSale() {
+    const phone = document.getElementById('customer_phone').value.trim();
+    const staff = document.getElementById('staff').value.trim();
+    const amount = Number(document.getElementById('amount').value);
+    const payment = document.getElementById('payment').value;
+    const res = document.getElementById('saleResult');
 
-        if(!phone || !amount || !staff) return alert("請完整填寫交易資訊");
-        res.style.display = 'block';
-        res.innerHTML = "💎 正在接通資料庫...";
+    if(!phone || !amount || !staff) return alert("請完整填寫交易資訊");
+    res.style.display = 'block';
+    res.innerHTML = "💎 正在連接 LUXE 會員資料庫...";
 
-        try {
-            if (payment === "儲值金") {
-                // 對接 history 資料夾與 phone 欄位
-                const snapshot = await rdb.ref('history').orderByChild('phone').equalTo(phone).once('value');
-                if (!snapshot.exists()) { res.innerHTML = "❌ 錯誤：找不到此會員手機"; return; }
-                
-                const memberKey = Object.keys(snapshot.val())[0];
-                const memberData = snapshot.val()[memberKey];
-                const currentBalance = Number(memberData.totalDeposit || 0); // 讀取 totalDeposit
+    try {
+        // 1. 從 members 資料夾找人 (與 card 系統同步)
+        const snapshot = await rdb.ref('members').orderByChild('phone').equalTo(phone).once('value');
+        
+        if (!snapshot.exists()) { 
+            res.innerHTML = "❌ 錯誤：找不到此手機號碼的會員檔案"; 
+            return; 
+        }
 
-                if (currentBalance < amount) { res.innerHTML = `❌ 餘額不足<br>目前剩餘：$${currentBalance}`; return; }
+        const memberKey = Object.keys(snapshot.val())[0];
+        const memberData = snapshot.val()[memberKey];
+        let currentBalance = Number(memberData.balance || 0);
 
-                const newBalance = currentBalance - amount;
-                await rdb.ref(`history/${memberKey}`).update({ totalDeposit: newBalance }); // 更新 totalDeposit
-                res.innerHTML = `✅ 扣款成功！<br>貴賓：${memberData.name}<br>餘額：<span style="color:var(--gold-bright)">$${newBalance}</span>`;
-            } else {
-                res.innerHTML = "✅ 交易已存檔 (現金/信用卡)";
+        // 2. 判斷支付方式
+        if (payment === "儲值金") {
+            if (currentBalance < amount) { 
+                res.innerHTML = `❌ 餘額不足<br>目前剩餘：$${currentBalance}`; 
+                return; 
             }
+            currentBalance -= amount; // 執行扣款
+        }
 
-            // 紀錄明細用於報表
-            await rdb.ref('pos_sales_log').push({
-                phone, staff, amount, payment,
-                timestamp: Date.now()
-            });
-            document.getElementById('amount').value = "";
-        } catch (e) { res.innerHTML = "❌ 系統錯誤: " + e.message; }
+        // 3. 產生歷史紀錄 (讓 card 系統點進去也能看到這筆)
+        const dateFull = new Date().toLocaleString('zh-TW', {hour12:false});
+        const newHistoryItem = {
+            date: dateFull.split(' ')[0],
+            fullTime: dateFull,
+            type: "消費",
+            amount: amount,
+            note: `[POS收銀] 設計師:${staff} (${payment})`,
+            afterBalance: currentBalance
+        };
+
+        let history = memberData.history || [];
+        history.unshift(newHistoryItem);
+
+        // 4. 同步更新 Firebase (members 資料夾)
+        await rdb.ref(`members/${memberKey}`).update({
+            balance: currentBalance,
+            history: history.slice(0, 50),
+            lastUpdate: Date.now()
+        });
+
+        // 5. 同時寫入 POS 業績日誌
+        await rdb.ref('pos_sales_log').push({
+            phone, staff, amount, payment, 
+            customerName: memberData.name,
+            timestamp: Date.now()
+        });
+
+        res.innerHTML = `✅ 交易成功！<br>貴賓：${memberData.name}<br>餘額：<span style="color:var(--gold-bright)">$${currentBalance}</span>`;
+        document.getElementById('amount').value = "";
+        
+    } catch (e) { 
+        res.innerHTML = "❌ 系統錯誤: " + e.message; 
     }
+}
 
     async function fetchReport(type) {
         const res = document.getElementById('queryResult');
@@ -252,3 +282,4 @@
 </script>
 </body>
 </html>
+
