@@ -6,7 +6,7 @@
     <title>LUXE POS | 美業收銀系統</title>
     
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
     <style>
         :root {
@@ -39,7 +39,6 @@
 
         h1 { text-align: center; letter-spacing: 5px; color: var(--gold-bright); }
 
-        /* 分頁切換 */
         .tabs { display: flex; gap: 10px; margin-bottom: 25px; }
         .tab-button {
             flex: 1; background: transparent; border: 1px solid var(--gold-dark);
@@ -47,14 +46,12 @@
         }
         .tab-button.active { background: var(--gold-dark); color: #000; font-weight: bold; }
 
-        /* 表單元件 */
         label { font-size: 14px; color: var(--gold-bright); margin-bottom: 8px; display: block; }
         input, select {
             width: 100%; padding: 14px; margin-bottom: 20px; background: #1a1a1a;
             border: 1px solid #333; color: #fff; border-radius: 4px; box-sizing: border-box;
         }
 
-        /* 4秒週期發光按鈕 */
         .btn-luxe {
             width: 100%; padding: 16px; border: none; border-radius: 4px; font-weight: bold;
             font-size: 18px; cursor: pointer; letter-spacing: 3px; color: #000;
@@ -62,7 +59,6 @@
             animation: goldPulse 4s infinite ease-in-out;
         }
 
-        /* 刪除專用按鈕 (紅金質感) */
         .btn-delete {
             width: 100%; padding: 10px; margin-top: 15px; border: 1px solid var(--danger);
             background: transparent; color: #ffbcbc; cursor: pointer; font-size: 13px;
@@ -80,60 +76,65 @@
         .result-box {
             margin-top: 25px; padding: 15px; border: 1px solid var(--gold-dark);
             background: rgba(212, 175, 55, 0.05); border-radius: 4px; display: none;
+            line-height: 1.6;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>👑 銷售POS系統</h1>
+    <h1>👑 LUXE 銷售系統</h1>
 
     <div class="tabs">
         <button class="tab-button active" onclick="openTab(event, 'sale')">收銀</button>
-        <button class="tab-button" onclick="openTab(event, 'query')">業績</button>
-        <button class="tab-button" onclick="openTab(event, 'bill')">管理</button>
+        <button class="tab-button" onclick="openTab(event, 'query')">查詢</button>
+        <button class="tab-button" onclick="openTab(event, 'manage')">管理</button>
     </div>
 
     <div id="sale" class="tab-content active">
-        <label>客戶姓名</label>
-        <input type="text" id="customer" placeholder="輸入貴賓尊稱">
+        <label>貴賓手機 (儲值扣款必填)</label>
+        <input type="text" id="customer_phone" placeholder="09xxxxxxxx">
         <label>服務設計師</label>
         <input type="text" id="staff" placeholder="輸入設計師姓名">
         <label>消費金額</label>
         <input type="number" id="amount" placeholder="0">
         <label>支付方式</label>
         <select id="payment">
-            <option>現金</option>
-            <option>信用卡</option>
-            <option>行動支付</option>
+            <option value="現金">現金支付</option>
+            <option value="信用卡">信用卡支付</option>
+            <option value="儲值金">⭐ 儲值金扣款</option>
         </select>
         <button class="btn-luxe" onclick="submitSale()">提交交易</button>
-        
         <button class="btn-delete" onclick="deleteLastSale()">⚠️ 刪除最近一筆交易</button>
-        
         <div id="saleResult" class="result-box"></div>
     </div>
 
     <div id="query" class="tab-content">
-        <label>查詢設計師</label>
-        <input type="text" id="q-staff" placeholder="輸入姓名">
-        <button class="btn-luxe" onclick="querySales()">開始查詢</button>
+        <label>查詢設計師業績</label>
+        <input type="text" id="q-staff" placeholder="設計師姓名">
+        <button class="btn-luxe" onclick="querySales()">開始統計</button>
         <div id="queryResult" class="result-box"></div>
+    </div>
+
+    <div id="manage" class="tab-content">
+        <p style="text-align:center; color:gray;">管理功能開發中...</p>
     </div>
 </div>
 
 <script>
+    // 您的最新 Firebase 配置
     const firebaseConfig = {
         apiKey: "AIzaSyCOhBN9TH3UJSOSx5XVyQ08f_2RUckvXYU",
         authDomain: "holyhairsalon-f73bf.firebaseapp.com",
+        databaseURL: "https://holyhairsalon-f73bf-default-rtdb.firebaseio.com",
         projectId: "holyhairsalon-f73bf",
         storageBucket: "holyhairsalon-f73bf.firebasestorage.app",
         messagingSenderId: "960169055224",
-        appId: "1:960169055224:web:ab3b0c2ddb0a9082bf3c0d"
+        appId: "1:960169055224:web:2a5dafd9bf2f1230bf3c0d"
     };
 
     firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+    const rdb = firebase.database(); // 使用即時資料庫
 
     function openTab(evt, tabName) {
         let contents = document.getElementsByClassName("tab-content");
@@ -144,80 +145,76 @@
         evt.currentTarget.classList.add("active");
     }
 
-    // 提交交易
     async function submitSale() {
+        const phone = document.getElementById('customer_phone').value;
+        const staff = document.getElementById('staff').value;
+        const amount = Number(document.getElementById('amount').value);
+        const payment = document.getElementById('payment').value;
         const res = document.getElementById('saleResult');
-        const data = {
-            customer: document.getElementById('customer').value,
-            staff: document.getElementById('staff').value,
-            amount: Number(document.getElementById('amount').value),
-            payment: document.getElementById('payment').value,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        };
 
-        if(!data.customer || !data.amount) return alert("欄位未填完");
+        if(!staff || !amount) return alert("請填入設計師與金額");
 
         res.style.display = 'block';
-        res.innerHTML = "💎 傳輸中...";
+        res.innerHTML = "💎 交易處理中...";
+
         try {
-            await db.collection("sales").add(data);
-            res.innerHTML = "✅ 交易已存入雲端";
+            if (payment === "儲值金") {
+                if(!phone) return res.innerHTML = "❌ 錯誤：扣款請輸入手機號碼";
+                const memberRef = rdb.ref('members/' + phone);
+                const snapshot = await memberRef.once('value');
+                
+                if (!snapshot.exists()) return res.innerHTML = "❌ 錯誤：找不到此會員";
+                
+                const bal = snapshot.val().balance;
+                if (bal < amount) return res.innerHTML = `❌ 餘額不足 ($${bal})`;
+
+                await memberRef.update({ balance: bal - amount });
+                res.innerHTML = `✅ 扣款成功！<br>剩餘餘額：$${bal - amount}`;
+            } else {
+                res.innerHTML = "✅ 交易紀錄成功";
+            }
+
+            // 存入銷售紀錄
+            await rdb.ref('sales').push({
+                phone: phone || "一般散客",
+                staff, amount, payment,
+                timestamp: Date.now()
+            });
             document.getElementById('amount').value = "";
         } catch (e) { res.innerHTML = "❌ 失敗: " + e.message; }
     }
 
-    // 新增功能：刪除最近一筆交易
     async function deleteLastSale() {
-        if(!confirm("確定要刪除「最後一筆」錄入的資料嗎？")) return;
-        
+        if(!confirm("確定要刪除最後一筆紀錄嗎？")) return;
         const res = document.getElementById('saleResult');
-        res.style.display = 'block';
-        res.innerHTML = "正在定位最後一筆資料...";
-
         try {
-            const snapshot = await db.collection("sales")
-                .orderBy("timestamp", "desc")
-                .limit(1)
-                .get();
-
-            if (snapshot.empty) {
-                res.innerHTML = "資料庫目前沒有任何紀錄。";
-                return;
-            }
-
-            const lastDocId = snapshot.docs[0].id;
-            await db.collection("sales").doc(lastDocId).delete();
-            res.innerHTML = "🗑️ 最後一筆交易已成功刪除。";
-        } catch (e) {
-            res.innerHTML = "❌ 刪除失敗: " + e.message;
-        }
+            const snapshot = await rdb.ref('sales').limitToLast(1).once('value');
+            if (!snapshot.exists()) return alert("目前沒有紀錄可刪除");
+            const lastKey = Object.keys(snapshot.val())[0];
+            await rdb.ref('sales/' + lastKey).remove();
+            res.style.display = 'block';
+            res.innerHTML = "🗑️ 最後一筆交易已成功移除";
+        } catch (e) { alert("刪除失敗: " + e.message); }
     }
 
-    // 業績查詢 + 累計
     async function querySales() {
         const qStaff = document.getElementById('q-staff').value;
         const res = document.getElementById('queryResult');
         res.style.display = 'block';
-        res.innerHTML = "調閱中...";
+        res.innerHTML = "正在計算業績...";
 
         try {
-            const snapshot = await db.collection("sales")
-                .where("staff", "==", qStaff)
-                .get();
-
-            let total = 0;
-            let count = 0;
-            snapshot.forEach(doc => {
-                total += doc.data().amount;
-                count++;
+            const snapshot = await rdb.ref('sales').once('value');
+            let total = 0, count = 0;
+            snapshot.forEach(child => {
+                if (child.val().staff === qStaff) {
+                    total += child.val().amount;
+                    count++;
+                }
             });
-
-            res.innerHTML = `<b>${qStaff} 業績簡報：</b><br>
-                             總成交筆數：${count} 筆<br>
-                             總業績金額：<span style="color:var(--gold-bright)">$${total}</span>`;
-        } catch (e) { res.innerHTML = "錯誤: " + e.message; }
+            res.innerHTML = `<b>${qStaff} 業績簡報：</b><br>成交筆數：${count} 筆<br>業績總計：<span style="color:var(--gold-bright)">$${total}</span>`;
+        } catch (e) { res.innerHTML = "查詢失敗: " + e.message; }
     }
 </script>
 </body>
 </html>
-
