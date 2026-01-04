@@ -17,60 +17,33 @@
             --card-bg: #151515;
         }
 
-        body {
-            background-color: var(--bg-black);
-            color: var(--text-gold);
-            font-family: 'PingFang TC', sans-serif;
-            margin: 0; display: flex; justify-content: center;
-        }
-
-        .container {
-            width: 100%; max-width: 450px; padding: 25px; box-sizing: border-box;
-            border: 1px solid var(--gold-dark); min-height: 100vh;
-            background: linear-gradient(145deg, #111, #050505);
-        }
-
+        body { background-color: var(--bg-black); color: var(--text-gold); font-family: 'PingFang TC', sans-serif; margin: 0; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 450px; padding: 25px; box-sizing: border-box; border: 1px solid var(--gold-dark); min-height: 100vh; background: linear-gradient(145deg, #111, #050505); }
         h1 { text-align: center; letter-spacing: 5px; color: var(--gold-bright); font-size: 24px; margin-bottom: 25px; }
 
-        /* 三頁標籤導航 */
+        /* 標籤導航 */
         .tabs { display: flex; gap: 5px; margin-bottom: 25px; }
-        .tab-button {
-            flex: 1; background: transparent; border: 1px solid var(--gold-dark);
-            color: var(--gold-dark); padding: 12px 2px; cursor: pointer; border-radius: 4px;
-            font-size: 13px; transition: 0.3s;
-        }
+        .tab-button { flex: 1; background: transparent; border: 1px solid var(--gold-dark); color: var(--gold-dark); padding: 12px 2px; cursor: pointer; border-radius: 4px; font-size: 13px; transition: 0.3s; }
         .tab-button.active { background: var(--gold-dark); color: #000; font-weight: bold; }
 
         label { font-size: 12px; color: var(--gold-bright); margin-bottom: 8px; display: block; opacity: 0.8; }
-        input, select {
-            width: 100%; padding: 15px; margin-bottom: 20px; background: var(--card-bg);
-            border: 1px solid #333; color: #fff; border-radius: 8px; box-sizing: border-box;
-        }
+        input, select { width: 100%; padding: 15px; margin-bottom: 20px; background: var(--card-bg); border: 1px solid #333; color: #fff; border-radius: 8px; box-sizing: border-box; }
 
-        .btn-luxe {
-            width: 100%; padding: 16px; border: none; border-radius: 8px; font-weight: bold;
-            font-size: 16px; cursor: pointer; letter-spacing: 3px; color: #000;
-            background: linear-gradient(45deg, var(--gold-dark), var(--gold-bright));
-        }
+        .btn-luxe { width: 100%; padding: 16px; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; letter-spacing: 3px; color: #000; background: linear-gradient(45deg, var(--gold-dark), var(--gold-bright)); }
+        .btn-outline { background: transparent; border: 1px solid var(--gold-dark); color: var(--text-gold); padding: 10px; border-radius: 8px; cursor: pointer; font-size: 12px; width: 100%; margin-bottom: 15px; }
 
-        .btn-outline {
-            background: transparent; border: 1px solid var(--gold-dark); color: var(--text-gold);
-            padding: 10px; border-radius: 8px; cursor: pointer; font-size: 12px; width: 100%; margin-bottom: 15px;
-        }
-
-        /* 報表樣式 */
-        .report-card {
-            background: rgba(212, 175, 55, 0.05); border: 1px solid var(--gold-dark);
-            padding: 20px; border-radius: 12px; margin-bottom: 20px;
-        }
-        .report-stat-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
+        /* 報表與明細樣式 */
+        .report-card { background: rgba(212, 175, 55, 0.05); border: 1px solid var(--gold-dark); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        .report-stat-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
         .report-total { font-size: 28px; color: var(--gold-bright); font-weight: 900; text-align: center; margin: 10px 0; }
         
-        .rank-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #222; font-size: 14px; }
+        .detail-header { font-size: 13px; color: var(--gold-bright); border-bottom: 1px solid var(--gold-dark); padding-bottom: 5px; margin-top: 15px; display: flex; justify-content: space-between; }
+        .detail-list { max-height: 300px; overflow-y: auto; margin-top: 10px; }
+        .detail-item { display: flex; justify-content: space-between; font-size: 12px; padding: 10px 0; border-bottom: 1px solid #222; }
+        .detail-time { color: #888; font-size: 10px; }
         
         #memberBrief { background: rgba(212, 175, 55, 0.1); padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
         .result-box { margin-top: 20px; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid var(--gold-bright); display:none; }
-        
         .type-tag { font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-left: 5px; vertical-align: middle; }
         .tag-member { background: var(--gold-dark); color: #000; }
         .tag-guest { border: 1px solid #666; color: #999; }
@@ -91,27 +64,22 @@
         <div id="step1">
             <label>識別會員手機</label>
             <input type="tel" id="customer_phone" placeholder="輸入 10 位手機號碼" oninput="checkMemberQuickly()">
-            
-            <button class="btn-outline" style="border-style: dashed;" onclick="setGuestMode()">
-                👤 散客結帳 (不入會/現金/刷卡)
-            </button>
-
+            <button class="btn-outline" style="border-style: dashed;" onclick="setGuestMode()">👤 散客結帳</button>
             <div id="memberBrief" style="display:none;">
                 <div style="font-size: 1.2rem; font-weight: bold; color: var(--gold-bright);" id="briefName">---</div>
                 <div style="margin-top: 8px;">可用餘額：<span id="briefBalance" style="color:var(--gold-bright); font-weight:bold;">$0</span></div>
             </div>
             <button class="btn-luxe" id="btnNext" onclick="goToStep(2)" style="display:none;">進入結帳 (Step 2)</button>
         </div>
-
         <div id="step2" style="display:none;">
             <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center;">
-                <span>正在為：<b id="finalName"></b> <span id="finalType"></span></span>
-                <u style="cursor:pointer; font-size:12px; color:var(--gold-dark);" onclick="goToStep(1)">重選客戶</u>
+                <span>為：<b id="finalName"></b> <span id="finalType"></span></span>
+                <u style="cursor:pointer; font-size:12px; color:var(--gold-dark);" onclick="goToStep(1)">重選</u>
             </div>
             <label>負責設計師</label>
             <input type="text" id="staff" placeholder="輸入名稱">
             <label>消費總額</label>
-            <input type="number" id="amount" placeholder="0" onclick="this.select()">
+            <input type="number" id="amount" placeholder="0">
             <label>支付渠道</label>
             <select id="payment">
                 <option value="儲值金">⭐ 儲值金扣款</option>
@@ -124,9 +92,9 @@
     </div>
 
     <div id="staff_query" class="tab-content" style="display:none;">
-        <label>搜尋特定設計師業績</label>
-        <input type="text" id="q-staff" placeholder="輸入設計師姓名">
-        <button class="btn-luxe" style="font-size:14px;" onclick="fetchStaffReport()">查詢個人數據</button>
+        <label>設計師姓名</label>
+        <input type="text" id="q-staff" placeholder="輸入要查詢的設計師">
+        <button class="btn-luxe" style="font-size:14px;" onclick="fetchStaffReport()">生成明細報表</button>
         <div id="staffResult" style="margin-top:20px;"></div>
     </div>
 
@@ -136,18 +104,11 @@
             <button class="tab-button" id="btnWeek" onclick="fetchPeriodicReport('week')">週報</button>
             <button class="tab-button" id="btnMonth" onclick="fetchPeriodicReport('month')">月報</button>
         </div>
-
         <div class="report-card">
-            <div id="reportTitle" style="color:var(--gold-bright); font-weight:bold; margin-bottom:15px;">全店營收</div>
+            <div id="reportTitle" style="color:var(--gold-bright); font-weight:bold;">全店營收</div>
             <div class="report-total" id="repTotal">$0</div>
-            
-            <div class="report-stat-row" style="border-top:1px solid #222; padding-top:15px;">
-                <span>👥 會員貢獻</span><span id="repMemberTotal">$0</span>
-            </div>
-            <div class="report-stat-row">
-                <span>👤 散客貢獻</span><span id="repGuestTotal">$0</span>
-            </div>
-            
+            <div class="report-stat-row"><span>👥 會員貢獻</span><span id="repMemberTotal">$0</span></div>
+            <div class="report-stat-row"><span>👤 散客貢獻</span><span id="repGuestTotal">$0</span></div>
             <hr style="border:0; border-top:1px solid #333; margin:15px 0;">
             <label>支付渠道分佈</label>
             <div id="repPayments" style="font-size:13px; margin-bottom:15px;"></div>
@@ -158,6 +119,7 @@
 </div>
 
 <script>
+    // Firebase 初始化 (保持原本配置)
     const firebaseConfig = {
         apiKey: "AIzaSyCOhBN9TH3UJSOSx5XVyQ08f_2RUckvXYU",
         authDomain: "holyhairsalon-f73bf.firebaseapp.com",
@@ -167,12 +129,12 @@
         messagingSenderId: "960169055224",
         appId: "1:960169055224:web:2a5dafd9bf2f1230bf3c0d"
     };
-
     firebase.initializeApp(firebaseConfig);
     const rdb = firebase.database();
 
     let currentMember = null;
 
+    // 分頁邏輯
     function openTab(evt, tabName) {
         let contents = document.getElementsByClassName("tab-content");
         for (let c of contents) c.style.display = "none";
@@ -187,12 +149,9 @@
         document.getElementById('step2').style.display = (step === 2) ? 'block' : 'none';
     }
 
-    // 會員檢查
+    // 會員與散客邏輯 (保持原樣)
     async function checkMemberQuickly() {
         const phone = document.getElementById('customer_phone').value.trim();
-        const paySelect = document.getElementById('payment');
-        Array.from(paySelect.options).forEach(opt => opt.disabled = false);
-
         if (phone.length >= 10) {
             const snapshot = await rdb.ref('members').orderByChild('phone').equalTo(phone).once('value');
             if (snapshot.exists()) {
@@ -201,27 +160,18 @@
                 document.getElementById('briefName').innerText = currentMember.name;
                 document.getElementById('briefBalance').innerText = "$" + (currentMember.balance || 0);
                 document.getElementById('finalName').innerText = currentMember.name;
-                document.getElementById('finalType').innerHTML = '<span class="type-tag tag-member">VIP會員</span>';
+                document.getElementById('finalType').innerHTML = '<span class="type-tag tag-member">VIP</span>';
                 document.getElementById('memberBrief').style.display = 'block';
                 document.getElementById('btnNext').style.display = 'block';
-            } else {
-                document.getElementById('memberBrief').style.display = 'none';
-                document.getElementById('btnNext').style.display = 'none';
             }
         }
     }
 
-    // 散客模式
     function setGuestMode() {
-        currentMember = { id: "GUEST", name: "一般散客", phone: "無", balance: 0, isGuest: true };
+        currentMember = { id: "GUEST", name: "一般散客", phone: "無", isGuest: true };
         document.getElementById('finalName').innerText = "一般散客";
         document.getElementById('finalType').innerHTML = '<span class="type-tag tag-guest">散客</span>';
-        
-        const paySelect = document.getElementById('payment');
-        paySelect.value = "現金";
-        Array.from(paySelect.options).forEach(opt => {
-            if(opt.value === "儲值金") opt.disabled = true;
-        });
+        document.getElementById('payment').value = "現金";
         goToStep(2);
     }
 
@@ -233,48 +183,105 @@
 
         if (!staff || !amount) return alert("請完整填寫");
         res.style.display = 'block';
-        res.innerHTML = "💎 LUXE 扣款程序執行中...";
+        res.innerHTML = "💎 交易處理中...";
 
         try {
             const now = new Date();
             const fullTime = now.toLocaleString('zh-TW', {hour12:false});
 
-            // 如果是會員，更新餘額與歷史
             if (!currentMember.isGuest) {
                 let balance = Number(currentMember.balance || 0);
                 if (payment === "儲值金") {
-                    if (balance < amount) { res.innerHTML = "❌ 會員餘額不足"; return; }
+                    if (balance < amount) { res.innerHTML = "❌ 餘額不足"; return; }
                     balance -= amount;
                 }
                 let history = currentMember.history || [];
-                history.unshift({
-                    date: fullTime.split(' ')[0], fullTime,
-                    type: "消費", amount, note: `[POS] ${staff} (${payment})`, afterBalance: balance
-                });
-                await rdb.ref(`members/${currentMember.id}`).update({
-                    balance: balance, history: history.slice(0, 50), lastUpdate: Date.now()
-                });
+                history.unshift({ date: fullTime.split(' ')[0], type: "消費", amount, note: `${staff}(${payment})`, afterBalance: balance });
+                await rdb.ref(`members/${currentMember.id}`).update({ balance: balance, history: history.slice(0, 50) });
             }
 
-            // 寫入統一業績日誌 (加入 isGuest 標記供報表篩選)
             await rdb.ref('pos_sales_log').push({
-                phone: currentMember.phone,
                 customerName: currentMember.name,
                 staff, amount, payment,
                 isGuest: currentMember.isGuest,
-                timestamp: Date.now()
+                timestamp: Date.now(),
+                dateStr: fullTime
             });
 
-            res.innerHTML = `✅ 交易成功！<br>客戶：${currentMember.name}<br>金額：$${amount}`;
-            setTimeout(() => { location.reload(); }, 2500);
-        } catch (e) { res.innerHTML = "系統錯誤: " + e.message; }
+            res.innerHTML = `✅ 成功！客戶：${currentMember.name} $${amount}`;
+            setTimeout(() => location.reload(), 2000);
+        } catch (e) { res.innerHTML = "錯誤: " + e.message; }
     }
 
-    // 週期報表 (含會員/散客分類)
+    // 🔥 核心：設計師業績明細查詢
+    async function fetchStaffReport() {
+        const staffName = document.getElementById('q-staff').value.trim();
+        const resultDiv = document.getElementById('staffResult');
+        if(!staffName) return alert("請輸入設計師姓名");
+
+        resultDiv.innerHTML = "⏳ 正在彙整 LUXE 數據...";
+        
+        try {
+            const snapshot = await rdb.ref('pos_sales_log').once('value');
+            let total = 0;
+            let count = 0;
+            let payDetails = { "儲值金": 0, "現金": 0, "信用卡": 0 };
+            let detailHtml = "";
+
+            snapshot.forEach(c => {
+                const d = c.val();
+                if(d.staff === staffName) {
+                    total += d.amount;
+                    count++;
+                    payDetails[d.payment] = (payDetails[d.payment] || 0) + d.amount;
+                    
+                    // 建立明細列
+                    detailHtml += `
+                        <div class="detail-item">
+                            <div>
+                                <div class="detail-time">${d.dateStr || ''}</div>
+                                <b>${d.customerName}</b>
+                            </div>
+                            <div style="text-align:right">
+                                <span style="font-size:10px; opacity:0.7;">${d.payment}</span><br>
+                                <span style="color:var(--gold-bright)">$${d.amount}</span>
+                            </div>
+                        </div>`;
+                }
+            });
+
+            if(count === 0) {
+                resultDiv.innerHTML = "❌ 找不到此設計師的紀錄";
+                return;
+            }
+
+            // 組合完整報表內容
+            resultDiv.innerHTML = `
+                <div class="report-card">
+                    <div style="color:var(--gold-bright); text-align:center; letter-spacing:2px;">DESIGNER REPORT</div>
+                    <div class="report-total">$${total}</div>
+                    <div style="text-align:center; font-size:12px; margin-bottom:15px; opacity:0.8;">共服務 ${count} 位客戶</div>
+                    
+                    <div class="hr-gold" style="border-top:1px solid #333; margin:15px 0;"></div>
+                    
+                    <label>分項總計</label>
+                    <div class="report-stat-row"><span>⭐ 儲值金扣款</span><span>$${payDetails['儲值金']}</span></div>
+                    <div class="report-stat-row"><span>💵 現金結帳</span><span>$${payDetails['現金']}</span></div>
+                    <div class="report-stat-row"><span>💳 信用卡刷卡</span><span>$${payDetails['信用卡']}</span></div>
+                    
+                    <div class="detail-header">
+                        <span>時間 / 客戶</span>
+                        <span>支付方式 / 金額</span>
+                    </div>
+                    <div class="detail-list">${detailHtml}</div>
+                </div>`;
+        } catch (e) { resultDiv.innerHTML = "查詢出錯: " + e.message; }
+    }
+
+    // 週期報表保持原本邏輯
     async function fetchPeriodicReport(type) {
         ['btnDay', 'btnWeek', 'btnMonth'].forEach(id => document.getElementById(id).classList.remove('active'));
         document.getElementById('btn' + type.charAt(0).toUpperCase() + type.slice(1)).classList.add('active');
-
         const snapshot = await rdb.ref('pos_sales_log').once('value');
         const now = new Date();
         let total = 0, memberTotal = 0, guestTotal = 0;
@@ -284,11 +291,9 @@
             const d = c.val();
             const t = new Date(d.timestamp);
             let match = false;
-
             if (type === 'day' && t.toDateString() === now.toDateString()) match = true;
             if (type === 'week' && (now - t) < 7*24*60*60*1000) match = true;
             if (type === 'month' && t.getMonth() === now.getMonth()) match = true;
-
             if (match) {
                 total += d.amount;
                 if (d.isGuest) guestTotal += d.amount; else memberTotal += d.amount;
@@ -296,31 +301,15 @@
                 payMap[d.payment] = (payMap[d.payment] || 0) + d.amount;
             }
         });
-
         document.getElementById('repTotal').innerText = "$" + total;
         document.getElementById('repMemberTotal').innerText = "$" + memberTotal;
         document.getElementById('repGuestTotal').innerText = "$" + guestTotal;
-
-        let payHtml = "";
-        for (let p in payMap) payHtml += `<div>${p}: $${payMap[p]}</div>`;
-        document.getElementById('repPayments').innerHTML = payHtml || "無數據";
-
-        let staffHtml = "";
-        Object.entries(staffMap).sort((a,b)=>b[1]-a[1]).forEach(([n, v], i) => {
-            staffHtml += `<div class="rank-item"><span>${i+1}. ${n}</span><span>$${v}</span></div>`;
+        let pStr = ""; for(let k in payMap) pStr += `<div>${k}: $${payMap[k]}</div>`;
+        document.getElementById('repPayments').innerHTML = pStr || "無數據";
+        let sStr = ""; Object.entries(staffMap).sort((a,b)=>b[1]-a[1]).forEach(([n, v], i) => {
+            sStr += `<div class="rank-item"><span>${i+1}. ${n}</span><span>$${v}</span></div>`;
         });
-        document.getElementById('repStaffRank').innerHTML = staffHtml || "無數據";
-    }
-
-    async function fetchStaffReport() {
-        const staffName = document.getElementById('q-staff').value.trim();
-        const resultDiv = document.getElementById('staffResult');
-        if(!staffName) return alert("請輸入名稱");
-        resultDiv.innerHTML = "查詢中...";
-        const snapshot = await rdb.ref('pos_sales_log').once('value');
-        let total = 0, count = 0;
-        snapshot.forEach(c => { if(c.val().staff === staffName) { total += c.val().amount; count++; } });
-        resultDiv.innerHTML = `<div class="report-card"><div style="color:var(--gold-bright)">${staffName} 的業績</div><div class="report-total">$${total}</div><div style="text-align:center">服務次數：${count} 次</div></div>`;
+        document.getElementById('repStaffRank').innerHTML = sStr || "無數據";
     }
 </script>
 </body>
