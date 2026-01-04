@@ -3,304 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LUXE POS | 專業奢華管理端</title>
-    
+    <title>LUXE POS | 專業美業系統</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-
     <style>
-        :root {
-            --bg-black: #0a0a0a;
-            --gold-bright: #d4af37;
-            --gold-dark: #8c6d1f;
-            --text-gold: #f3e5ab;
-            --card-bg: #151515;
-            --danger: #802020;
-        }
-
-        body { background-color: var(--bg-black); color: var(--text-gold); font-family: 'PingFang TC', sans-serif; margin: 0; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 450px; padding: 25px; box-sizing: border-box; border: 1px solid var(--gold-dark); min-height: 100vh; background: linear-gradient(145deg, #111, #050505); }
-        h1 { text-align: center; letter-spacing: 5px; color: var(--gold-bright); font-size: 24px; margin-bottom: 25px; }
-
-        .tabs { display: flex; gap: 5px; margin-bottom: 25px; }
-        .tab-button { flex: 1; background: transparent; border: 1px solid var(--gold-dark); color: var(--gold-dark); padding: 12px 2px; cursor: pointer; border-radius: 4px; font-size: 13px; transition: 0.3s; }
-        .tab-button.active { background: var(--gold-dark); color: #000; font-weight: bold; }
-
-        label { font-size: 12px; color: var(--gold-bright); margin-bottom: 8px; display: block; opacity: 0.8; }
-        input, select { width: 100%; padding: 15px; margin-bottom: 20px; background: var(--card-bg); border: 1px solid #333; color: #fff; border-radius: 8px; box-sizing: border-box; }
-
-        .btn-luxe { width: 100%; padding: 16px; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; letter-spacing: 3px; color: #000; background: linear-gradient(45deg, var(--gold-dark), var(--gold-bright)); }
-        .btn-outline { background: transparent; border: 1px solid var(--gold-dark); color: var(--text-gold); padding: 10px; border-radius: 8px; cursor: pointer; font-size: 12px; width: 100%; margin-bottom: 15px; }
-
-        .report-card { background: rgba(212, 175, 55, 0.05); border: 1px solid var(--gold-dark); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-        .report-stat-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
-        .report-total { font-size: 28px; color: var(--gold-bright); font-weight: 900; text-align: center; margin: 10px 0; }
-        
-        .detail-header { font-size: 11px; color: var(--gold-bright); border-bottom: 1px solid var(--gold-dark); padding-bottom: 5px; margin-top: 15px; display: flex; justify-content: space-between; }
-        .detail-list { max-height: 250px; overflow-y: auto; margin-top: 10px; }
-        .detail-item { display: flex; justify-content: space-between; font-size: 11px; padding: 10px 0; border-bottom: 1px solid #222; align-items: center; }
-        
-        #memberBrief { background: rgba(212, 175, 55, 0.1); padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
-        .result-box { margin-top: 20px; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid var(--gold-bright); display:none; }
-        .type-tag { font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-left: 5px; vertical-align: middle; }
-        .tag-member { background: var(--gold-dark); color: #000; }
-        .tag-guest { border: 1px solid #666; color: #999; }
+        /* 保留原本 LUXE 金黑質感風格 */
+        :root { --bg-black: #0a0a0a; --gold: #d4af37; --text: #f3e5ab; }
+        body { background: var(--bg-black); color: var(--text); font-family: sans-serif; margin: 0; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 450px; padding: 20px; box-sizing: border-box; }
+        h1 { text-align: center; color: var(--gold); letter-spacing: 3px; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 12px; border: 1px solid var(--gold); background: none; color: var(--gold); cursor: pointer; }
+        .tab-btn.active { background: var(--gold); color: #000; font-weight: bold; }
+        label { display: block; margin: 10px 0 5px; color: var(--gold); font-size: 14px; }
+        input, select { width: 100%; padding: 12px; background: #1a1a1a; border: 1px solid #333; color: #fff; border-radius: 4px; box-sizing: border-box; }
+        .btn-main { width: 100%; padding: 15px; background: linear-gradient(45deg, #8c6d1f, #d4af37); border: none; color: #000; font-weight: bold; font-size: 16px; border-radius: 4px; cursor: pointer; margin-top: 10px; }
+        .result-box { margin-top: 20px; padding: 15px; border: 1px solid var(--gold); background: rgba(212, 175, 55, 0.1); border-radius: 4px; display: none; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>👑 LUXE POS</h1>
-
     <div class="tabs">
-        <button class="tab-button active" onclick="openTab(event, 'sale')">收銀扣款</button>
-        <button class="tab-button" onclick="openTab(event, 'staff_query')">業績明細</button>
-        <button class="tab-button" onclick="openTab(event, 'reports'); fetchPeriodicReport('day');">店務日報</button>
+        <button class="tab-btn active" onclick="showTab('sale')">收銀</button>
+        <button class="tab-btn" onclick="showTab('query')">業績明細</button>
     </div>
 
-    <div id="sale" class="tab-content">
-        <div id="step1">
-            <label>辨識貴賓手機</label>
-            <input type="tel" id="customer_phone" placeholder="09xxxxxxxx" oninput="checkMemberQuickly()">
-            <button class="btn-outline" style="border-style: dashed;" onclick="setGuestMode()">👤 一般散客結帳</button>
-            <div id="memberBrief" style="display:none;">
-                <div style="font-size: 1.2rem; font-weight: bold; color: var(--gold-bright);" id="briefName">---</div>
-                <div style="margin-top: 8px;">可用餘額：<span id="briefBalance" style="color:var(--gold-bright); font-weight:bold;">$0</span></div>
-            </div>
-            <button class="btn-luxe" id="btnNext" onclick="goToStep(2)" style="display:none;">進入結帳介面</button>
-        </div>
-
-        <div id="step2" style="display:none;">
-            <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center;">
-                <span>對象：<b id="finalName"></b> <span id="finalType"></span></span>
-                <u style="cursor:pointer; font-size:12px; color:var(--gold-dark);" onclick="goToStep(1)">重新選取</u>
-            </div>
-            
-            <label>負責設計師</label>
-            <input type="text" id="staff" placeholder="輸入姓名">
-            
-            <label>💇‍♂️ 技術服務收入 (剪/染/燙/護)</label>
-            <input type="number" id="tech_amount" placeholder="0" oninput="sumTotal()">
-            
-            <label>🧴 產品販售收入 (洗護產品)</label>
-            <input type="number" id="prod_amount" placeholder="0" oninput="sumTotal()">
-
-            <div style="text-align:center; margin:10px 0 20px 0; border-top:1px solid #333; padding-top:10px;">
-                <span style="font-size:14px; opacity:0.8;">總付款金額：</span>
-                <span style="font-size:24px; color:var(--gold-bright); font-weight:bold;">$<span id="total_display">0</span></span>
-            </div>
-
-            <label>支付方式</label>
-            <select id="payment">
-                <option value="儲值金">⭐ 儲值金扣款</option>
-                <option value="現金">💵 現金結帳</option>
-                <option value="信用卡">💳 信用卡/行動支付</option>
-            </select>
-
-            <button class="btn-luxe" onclick="submitSale()">執行交易並存檔</button>
-        </div>
+    <div id="sale" class="tab-content active">
+        <label>貴賓手機 (儲值扣款必填)</label>
+        <input type="text" id="phone" placeholder="09xxxxxxxx">
+        
+        <label>服務設計師</label>
+        <input type="text" id="staff" placeholder="輸入設計師姓名">
+        
+        <hr style="border: 0.5px solid #333; margin: 20px 0;">
+        
+        <label>💈 技術服務金額 (剪染燙)</label>
+        <input type="number" id="tech_amt" placeholder="0">
+        
+        <label>🧴 產品販售金額</label>
+        <input type="number" id="prod_amt" placeholder="0">
+        
+        <label>支付方式</label>
+        <select id="payment">
+            <option value="現金">現金結帳</option>
+            <option value="信用卡">信用卡刷卡</option>
+            <option value="儲值金">⭐ 儲值金扣款</option>
+        </select>
+        
+        <button class="btn-main" onclick="processSale()">確認提交交易</button>
         <div id="saleResult" class="result-box"></div>
     </div>
 
-    <div id="staff_query" class="tab-content" style="display:none;">
+    <div id="query" class="tab-content">
         <label>查詢設計師姓名</label>
-        <input type="text" id="q-staff" placeholder="輸入名稱">
-        <button class="btn-luxe" onclick="fetchStaffReport()">生成明細報表</button>
-        <div id="staffResult" style="margin-top:20px;"></div>
-    </div>
-
-    <div id="reports" class="tab-content" style="display:none;">
-        <div style="display: flex; gap: 8px; margin-bottom: 20px;">
-            <button class="tab-button" id="btnDay" onclick="fetchPeriodicReport('day')">本日</button>
-            <button class="tab-button" id="btnMonth" onclick="fetchPeriodicReport('month')">本月</button>
-        </div>
-        <div class="report-card">
-            <div id="reportTitle" style="color:var(--gold-bright); font-weight:bold;">全店營收統計</div>
-            <div class="report-total" id="repTotal">$0</div>
-            <div class="report-stat-row"><span>💇‍♂️ 技術總收入</span><span id="repTechTotal">$0</span></div>
-            <div class="report-stat-row"><span>🧴 產品總販售</span><span id="repProdTotal">$0</span></div>
-            <hr style="border:0; border-top:1px solid #333; margin:15px 0;">
-            <label>設計師排行 (總業績)</label>
-            <div id="repStaffRank"></div>
-        </div>
+        <input type="text" id="q_staff" placeholder="輸入姓名">
+        <button class="btn-main" onclick="getReport()">生成明細報表</button>
+        <div id="queryResult" class="result-box"></div>
     </div>
 </div>
 
 <script>
-    // Firebase 初始化
+    // 配置對接 Realtime Database
     const firebaseConfig = {
         apiKey: "AIzaSyCOhBN9TH3UJSOSx5XVyQ08f_2RUckvXYU",
         authDomain: "holyhairsalon-f73bf.firebaseapp.com",
         databaseURL: "https://holyhairsalon-f73bf-default-rtdb.firebaseio.com",
         projectId: "holyhairsalon-f73bf",
-        storageBucket: "holyhairsalon-f73bf.firebasestorage.app",
-        messagingSenderId: "960169055224",
-        appId: "1:960169055224:web:2a5dafd9bf2f1230bf3c0d"
+        appId: "1:960169055224:web:ab3b0c2ddb0a9082bf3c0d"
     };
+
     firebase.initializeApp(firebaseConfig);
     const rdb = firebase.database();
 
-    let currentMember = null;
-
-    function openTab(evt, tabName) {
-        let contents = document.getElementsByClassName("tab-content");
-        for (let c of contents) c.style.display = "none";
-        let buttons = document.getElementsByClassName("tab-button");
-        for (let b of buttons) b.classList.remove("active");
-        document.getElementById(tabName).style.display = "block";
-        if(evt) evt.currentTarget.classList.add("active");
+    function showTab(name) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(name).classList.add('active');
+        event.currentTarget.classList.add('active');
     }
 
-    function goToStep(step) {
-        document.getElementById('step1').style.display = (step === 1) ? 'block' : 'none';
-        document.getElementById('step2').style.display = (step === 2) ? 'block' : 'none';
-        document.getElementById('saleResult').style.display = 'none';
-    }
-
-    function sumTotal() {
-        const t = Number(document.getElementById('tech_amount').value || 0);
-        const p = Number(document.getElementById('prod_amount').value || 0);
-        document.getElementById('total_display').innerText = t + p;
-    }
-
-    async function checkMemberQuickly() {
-        const phone = document.getElementById('customer_phone').value.trim();
-        if (phone.length >= 10) {
-            const snapshot = await rdb.ref('members').orderByChild('phone').equalTo(phone).once('value');
-            if (snapshot.exists()) {
-                const id = Object.keys(snapshot.val())[0];
-                currentMember = { id, ...snapshot.val()[id], isGuest: false };
-                document.getElementById('briefName').innerText = currentMember.name;
-                document.getElementById('briefBalance').innerText = "$" + (currentMember.balance || 0);
-                document.getElementById('finalName').innerText = currentMember.name;
-                document.getElementById('finalType').innerHTML = '<span class="type-tag tag-member">VIP 會員</span>';
-                document.getElementById('memberBrief').style.display = 'block';
-                document.getElementById('btnNext').style.display = 'block';
-            }
-        }
-    }
-
-    function setGuestMode() {
-        currentMember = { id: "GUEST", name: "一般散客", phone: "無", isGuest: true };
-        document.getElementById('finalName').innerText = "一般散客";
-        document.getElementById('finalType').innerHTML = '<span class="type-tag tag-guest">散客模式</span>';
-        document.getElementById('payment').value = "現金";
-        goToStep(2);
-    }
-
-    async function submitSale() {
-        const staff = document.getElementById('staff').value.trim();
-        const tech = Number(document.getElementById('tech_amount').value || 0);
-        const prod = Number(document.getElementById('prod_amount').value || 0);
+    async function processSale() {
+        const phone = document.getElementById('phone').value;
+        const staff = document.getElementById('staff').value;
+        const tech = Number(document.getElementById('tech_amt').value || 0);
+        const prod = Number(document.getElementById('prod_amt').value || 0);
         const total = tech + prod;
         const payment = document.getElementById('payment').value;
         const res = document.getElementById('saleResult');
 
-        if (!staff || total <= 0) return alert("請輸入設計師及消費金額");
-        res.style.display = 'block';
-        res.innerHTML = "💎 交易寫入中...";
+        if(!staff || total <= 0) return alert("請輸入金額與設計師");
+        res.style.display = 'block'; res.innerHTML = "處理中...";
 
         try {
-            const now = new Date();
-            const timeStr = now.toLocaleString('zh-TW', {hour12:false});
-
-            if (!currentMember.isGuest && payment === "儲值金") {
-                let balance = Number(currentMember.balance || 0);
-                if (balance < total) { res.innerHTML = "❌ 餘額不足"; return; }
-                balance -= total;
-                await rdb.ref(`members/${currentMember.id}`).update({ balance: balance });
-            }
-
-            // 符合 Rules 的寫入結構
-            await rdb.ref('pos_sales_log').push({
-                customerName: currentMember.name,
-                staff: staff,
-                tech_income: tech,
-                prod_income: prod,
-                total_amount: total,
-                payment: payment,
-                timestamp: Date.now(),
-                dateStr: timeStr
-            });
-
-            res.innerHTML = `✅ 交易完成！<br>${currentMember.name} 總計 $${total}`;
-            setTimeout(() => location.reload(), 1500);
-        } catch (e) { res.innerHTML = "錯誤: " + e.message; }
-    }
-
-    // 查詢設計師細分明細
-    async function fetchStaffReport() {
-        const staffName = document.getElementById('q-staff').value.trim();
-        const resultDiv = document.getElementById('staffResult');
-        if(!staffName) return alert("請輸入設計師姓名");
-
-        resultDiv.innerHTML = "⏳ 讀取明細中...";
-        try {
-            const snapshot = await rdb.ref('pos_sales_log').orderByChild('staff').equalTo(staffName).once('value');
-            let tTotal = 0, pTotal = 0, count = 0;
-            let listHtml = "";
-
-            snapshot.forEach(c => {
-                const d = c.val();
-                tTotal += (d.tech_income || 0);
-                pTotal += (d.prod_income || 0);
-                count++;
-                listHtml += `
-                    <div class="detail-item">
-                        <div style="flex:1">
-                            <div style="font-size:9px; opacity:0.6">${d.dateStr.split(' ')[0]}</div>
-                            <b>${d.customerName}</b>
-                        </div>
-                        <div style="flex:1; text-align:right">
-                            <span style="color:#aaa">技:$${d.tech_income}</span> / <span style="color:var(--gold-bright)">品:$${d.prod_income}</span>
-                        </div>
-                    </div>`;
-            });
-
-            resultDiv.innerHTML = `
-                <div class="report-card">
-                    <div style="text-align:center; color:var(--gold-bright); font-size:14px;">${staffName} 業績分析</div>
-                    <div class="report-total">$${tTotal + pTotal}</div>
-                    <div class="report-stat-row"><span>技術收入</span><span>$${tTotal}</span></div>
-                    <div class="report-stat-row"><span>產品銷售</span><span>$${pTotal}</span></div>
-                    <div class="detail-header"><span>日期 / 客戶</span><span>技術 / 產品金額</span></div>
-                    <div class="detail-list">${listHtml || '無明細'}</div>
-                </div>`;
-        } catch (e) { resultDiv.innerHTML = "查詢失敗: " + e.message; }
-    }
-
-    // 週期報表 (日報/月報)
-    async function fetchPeriodicReport(type) {
-        ['btnDay', 'btnMonth'].forEach(id => document.getElementById(id).classList.remove('active'));
-        document.getElementById('btn' + type.charAt(0).toUpperCase() + type.slice(1)).classList.add('active');
-        
-        const snapshot = await rdb.ref('pos_sales_log').once('value');
-        const now = new Date();
-        let techAll = 0, prodAll = 0, staffMap = {};
-
-        snapshot.forEach(c => {
-            const d = c.val();
-            const t = new Date(d.timestamp);
-            let match = false;
-            if (type === 'day' && t.toDateString() === now.toDateString()) match = true;
-            if (type === 'month' && t.getMonth() === now.getMonth()) match = true;
+            // 會員查詢邏輯：遍歷 members 以支持亂碼 ID 結構
+            let memberKey = null;
+            let currentBalance = 0;
+            const snapshot = await rdb.ref('members').once('value');
             
-            if (match) {
-                techAll += (d.tech_income || 0);
-                prodAll += (d.prod_income || 0);
-                staffMap[d.staff] = (staffMap[d.staff] || 0) + (d.total_amount || 0);
-            }
-        });
+            snapshot.forEach(child => {
+                if(child.val().phone === phone || child.key === phone) {
+                    memberKey = child.key;
+                    currentBalance = Number(child.val().balance || 0);
+                }
+            });
 
-        document.getElementById('repTotal').innerText = "$" + (techAll + prodAll);
-        document.getElementById('repTechTotal').innerText = "$" + techAll;
-        document.getElementById('repProdTotal').innerText = "$" + prodAll;
-        
-        let sStr = ""; 
-        Object.entries(staffMap).sort((a,b)=>b[1]-a[1]).forEach(([n, v], i) => {
-            sStr += `<div class="report-stat-row"><span>${i+1}. ${n}</span><span>$${v}</span></div>`;
-        });
-        document.getElementById('repStaffRank').innerHTML = sStr || "尚無數據";
+            if (payment === "儲值金") {
+                if(!memberKey) return res.innerHTML = "❌ 找不到此會員手機，請先建立資料";
+                if(currentBalance < total) return res.innerHTML = `❌ 餘額不足 (餘額: $${currentBalance})`;
+                await rdb.ref(`members/${memberKey}`).update({ balance: currentBalance - total });
+            }
+
+            // 存入銷售紀錄，包含細分項目
+            await rdb.ref('sales').push({
+                staff, tech, prod, total, payment,
+                timestamp: Date.now(),
+                phone: phone || "散客"
+            });
+
+            res.innerHTML = `✅ 交易成功！<br>總計：$${total} (技術:$${tech} / 產品:$${prod})`;
+            document.getElementById('tech_amt').value = ""; document.getElementById('prod_amt').value = "";
+        } catch (e) { res.innerHTML = "❌ 錯誤: " + e.message; }
+    }
+
+    async function getReport() {
+        const qStaff = document.getElementById('q_staff').value;
+        const res = document.getElementById('queryResult');
+        if(!qStaff) return alert("請輸入設計師姓名");
+        res.style.display = 'block'; res.innerHTML = "計算中...";
+
+        try {
+            const snap = await rdb.ref('sales').once('value');
+            let tTech = 0, tProd = 0, count = 0;
+            snap.forEach(c => {
+                if(c.val().staff === qStaff) {
+                    tTech += Number(c.val().tech || 0);
+                    tProd += Number(c.val().prod || 0);
+                    count++;
+                }
+            });
+            res.innerHTML = `<b>${qStaff} 業績簡報</b><hr>` +
+                          `服務客數：${count} 位<br>` +
+                          `技術收入：$${tTech}<br>` +
+                          `產品收入：$${tProd}<br>` +
+                          `總計營收：<span style="color:var(--gold)">$${tTech + tProd}</span>`;
+        } catch (e) { res.innerHTML = "查詢失敗"; }
     }
 </script>
 </body>
