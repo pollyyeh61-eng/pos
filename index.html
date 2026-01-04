@@ -138,15 +138,28 @@
 </div>
 
 <script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyCOhBN9TH3UJSOSx5XVyQ08f_2RUckvXYU",
-        authDomain: "holyhairsalon-f73bf.firebaseapp.com",
-        databaseURL: "https://holyhairsalon-f73bf-default-rtdb.firebaseio.com",
-        projectId: "holyhairsalon-f73bf",
-        storageBucket: "holyhairsalon-f73bf.firebasestorage.app",
-        messagingSenderId: "960169055224",
-        appId: "1:960169055224:web:2a5dafd9bf2f1230bf3c0d"
-    };
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyCOhBN9TH3UJSOSx5XVyQ08f_2RUckvXYU",
+  authDomain: "holyhairsalon-f73bf.firebaseapp.com",
+  databaseURL: "https://holyhairsalon-f73bf-default-rtdb.firebaseio.com",
+  projectId: "holyhairsalon-f73bf",
+  storageBucket: "holyhairsalon-f73bf.firebasestorage.app",
+  messagingSenderId: "960169055224",
+  appId: "1:960169055224:web:ab3b0c2ddb0a9082bf3c0d",
+  measurementId: "G-33P45H8H9Q"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 
     firebase.initializeApp(firebaseConfig);
     const rdb = firebase.database();
@@ -282,4 +295,5 @@
 </script>
 </body>
 </html>
+
 
