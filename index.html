@@ -14,82 +14,57 @@
             --gold-bright: #d4af37;
             --gold-dark: #8c6d1f;
             --text-gold: #f3e5ab;
-            --danger: #802020;
+            --card-bg: #151515;
         }
 
         body {
             background-color: var(--bg-black);
             color: var(--text-gold);
-            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            font-family: 'PingFang TC', sans-serif;
             margin: 0; display: flex; justify-content: center;
         }
 
-        /* 呼吸發光邊框容器 */
         .container {
-            width: 100%; max-width: 450px; padding: 30px 25px; box-sizing: border-box;
-            border: 1px solid var(--gold-dark);
-            min-height: 100vh;
+            width: 100%; max-width: 450px; padding: 25px; box-sizing: border-box;
+            border: 1px solid var(--gold-dark); min-height: 100vh;
             background: linear-gradient(145deg, #111, #050505);
-            animation: breathe 5s infinite alternate;
         }
 
-        @keyframes breathe {
-            from { box-shadow: 0 0 15px rgba(140, 109, 31, 0.2); border-color: var(--gold-dark); }
-            to { box-shadow: 0 0 35px rgba(212, 175, 55, 0.4); border-color: var(--gold-bright); }
-        }
+        h1 { text-align: center; letter-spacing: 5px; color: var(--gold-bright); font-size: 24px; margin-bottom: 25px; }
 
-        h1 { text-align: center; letter-spacing: 8px; color: var(--gold-bright); font-size: 26px; text-shadow: 0 0 10px rgba(212, 175, 55, 0.5); }
-
-        /* 分頁切換 */
-        .tabs { display: flex; gap: 10px; margin-bottom: 30px; }
+        /* 三頁標籤導航 */
+        .tabs { display: flex; gap: 5px; margin-bottom: 25px; }
         .tab-button {
             flex: 1; background: transparent; border: 1px solid var(--gold-dark);
-            color: var(--gold-dark); padding: 12px 5px; cursor: pointer; border-radius: 4px;
-            transition: 0.3s; letter-spacing: 2px;
+            color: var(--gold-dark); padding: 12px 2px; cursor: pointer; border-radius: 4px;
+            font-size: 13px; transition: 0.3s;
         }
-        .tab-button.active { background: var(--gold-dark); color: #000; font-weight: bold; box-shadow: 0 0 10px var(--gold-dark); }
+        .tab-button.active { background: var(--gold-dark); color: #000; font-weight: bold; }
 
-        /* 表單設計 */
-        label { font-size: 13px; color: var(--gold-bright); margin-bottom: 8px; display: block; letter-spacing: 1px; }
+        label { font-size: 12px; color: var(--gold-bright); margin-bottom: 8px; display: block; opacity: 0.8; }
         input, select {
-            width: 100%; padding: 15px; margin-bottom: 20px; background: #151515;
-            border: 1px solid #333; color: #fff; border-radius: 4px; box-sizing: border-box;
-            outline: none; transition: 0.3s;
+            width: 100%; padding: 15px; margin-bottom: 20px; background: var(--card-bg);
+            border: 1px solid #333; color: #fff; border-radius: 8px; box-sizing: border-box;
         }
-        input:focus { border-color: var(--gold-bright); background: #1a1a1a; }
 
-        /* 4秒週期發光按鈕 */
         .btn-luxe {
-            width: 100%; padding: 18px; border: none; border-radius: 4px; font-weight: bold;
-            font-size: 18px; cursor: pointer; letter-spacing: 5px; color: #000;
-            background: linear-gradient(45deg, var(--gold-dark), var(--gold-bright), var(--gold-dark));
-            background-size: 200% 200%;
-            animation: goldPulse 4s infinite ease-in-out;
+            width: 100%; padding: 16px; border: none; border-radius: 8px; font-weight: bold;
+            font-size: 16px; cursor: pointer; letter-spacing: 3px; color: #000;
+            background: linear-gradient(45deg, var(--gold-dark), var(--gold-bright));
         }
 
-        @keyframes goldPulse {
-            0% { background-position: 0% 50%; filter: brightness(0.8); box-shadow: 0 0 5px var(--gold-dark); }
-            50% { background-position: 100% 50%; filter: brightness(1.2); box-shadow: 0 0 25px var(--gold-bright); }
-            100% { background-position: 0% 50%; filter: brightness(0.8); box-shadow: 0 0 5px var(--gold-dark); }
+        /* 報表專用樣式 */
+        .report-card {
+            background: rgba(212, 175, 55, 0.05); border: 1px solid var(--gold-dark);
+            padding: 20px; border-radius: 12px; margin-bottom: 20px;
         }
-
-        /* 報表小按鈕 */
-        .report-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .btn-outline {
-            background: transparent; border: 1px solid var(--gold-dark); color: var(--text-gold);
-            padding: 10px; border-radius: 4px; cursor: pointer; font-size: 12px; transition: 0.3s;
-        }
-        .btn-outline:hover { background: var(--gold-dark); color: #000; }
-
-        .result-box {
-            margin-top: 25px; padding: 20px; border: 1px solid var(--gold-dark);
-            background: rgba(212, 175, 55, 0.03); border-radius: 4px; display: none;
-            line-height: 1.8; animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .hr-gold { border: 0; border-top: 1px solid rgba(140, 109, 31, 0.5); margin: 15px 0; }
-        .rank-item { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #222; }
+        .report-stat-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 15px; }
+        .report-total { font-size: 24px; color: var(--gold-bright); font-weight: 900; text-align: center; margin: 15px 0; }
+        
+        .rank-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #222; font-size: 14px; }
+        
+        #memberBrief { background: rgba(212, 175, 55, 0.1); padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
+        .result-box { margin-top: 20px; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid var(--gold-bright); }
     </style>
 </head>
 <body>
@@ -99,70 +74,84 @@
 
     <div class="tabs">
         <button class="tab-button active" onclick="openTab(event, 'sale')">收銀扣款</button>
-        <button class="tab-button" onclick="openTab(event, 'query')">業績報表</button>
+        <button class="tab-button" onclick="openTab(event, 'staff_query')">業績查詢</button>
+        <button class="tab-button" onclick="openTab(event, 'reports'); fetchPeriodicReport('day');">週期報表</button>
     </div>
 
     <div id="sale" class="tab-content">
-        <label>貴賓手機號碼</label>
-        <input type="text" id="customer_phone" placeholder="09xxxxxxxx">
-        <label>負責設計師</label>
-        <input type="text" id="staff" placeholder="輸入設計師名稱">
-        <label>消費總額</label>
-        <input type="number" id="amount" placeholder="0">
-        <label>支付渠道</label>
-        <select id="payment">
-            <option value="儲值金">⭐ 儲值金扣款</option>
-            <option value="現金">現金結帳</option>
-            <option value="信用卡">信用卡刷卡</option>
-        </select>
-        <button class="btn-luxe" onclick="submitSale()">提交交易</button>
-        <div id="saleResult" class="result-box"></div>
+        <div id="step1">
+            <label>識別會員手機</label>
+            <input type="tel" id="customer_phone" placeholder="輸入 10 位手機號碼" oninput="checkMemberQuickly()">
+            <div id="memberBrief" style="display:none;">
+                <div style="font-size: 1.2rem; font-weight: bold; color: var(--gold-bright);" id="briefName">---</div>
+                <div style="margin-top: 8px;">可用餘額：<span id="briefBalance" style="color:var(--gold-bright); font-weight:bold;">$0</span></div>
+            </div>
+            <button class="btn-luxe" id="btnNext" onclick="goToStep(2)" style="display:none;">進入結帳</button>
+        </div>
+
+        <div id="step2" style="display:none;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                <span>貴賓：<b id="finalName"></b></span>
+                <u style="cursor:pointer; font-size:12px;" onclick="goToStep(1)">重選</u>
+            </div>
+            <label>負責設計師</label>
+            <input type="text" id="staff" placeholder="輸入名稱">
+            <label>消費總額</label>
+            <input type="number" id="amount" placeholder="0">
+            <label>支付渠道</label>
+            <select id="payment">
+                <option value="儲值金">⭐ 儲值金扣款</option>
+                <option value="現金">現金結帳</option>
+                <option value="信用卡">信用卡刷卡</option>
+            </select>
+            <button class="btn-luxe" onclick="submitSale()">執行交易</button>
+        </div>
+        <div id="saleResult" class="result-box" style="display:none;"></div>
     </div>
 
-    <div id="query" class="tab-content" style="display:none;">
-        <label>全店週期快報</label>
-        <div class="report-grid">
-            <button class="btn-outline" onclick="fetchReport('day')">日報</button>
-            <button class="btn-outline" onclick="fetchReport('week')">週報</button>
-            <button class="btn-outline" onclick="fetchReport('month')">月報</button>
+    <div id="staff_query" class="tab-content" style="display:none;">
+        <label>搜尋特定設計師業績</label>
+        <input type="text" id="q-staff" placeholder="輸入設計師姓名">
+        <button class="btn-luxe" style="font-size:14px;" onclick="fetchStaffReport()">查詢個人數據</button>
+        <div id="staffResult" style="margin-top:20px;"></div>
+    </div>
+
+    <div id="reports" class="tab-content" style="display:none;">
+        <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+            <button class="tab-button" id="btnDay" onclick="fetchPeriodicReport('day')">日報</button>
+            <button class="tab-button" id="btnWeek" onclick="fetchPeriodicReport('week')">週報</button>
+            <button class="tab-button" id="btnMonth" onclick="fetchPeriodicReport('month')">月報</button>
         </div>
-        
-        <div class="hr-gold"></div>
-        
-        <label>設計師個人業績</label>
-        <input type="text" id="q-staff" placeholder="輸入姓名">
-        <button class="btn-luxe" style="font-size: 14px; padding: 12px;" onclick="fetchReport('staff')">查詢個人業績</button>
-        
-        <div id="queryResult" class="result-box"></div>
+
+        <div class="report-card" id="periodicCard">
+            <div id="reportTitle" style="color:var(--gold-bright); font-weight:bold; margin-bottom:15px;">數據讀取中...</div>
+            <div class="report-stat-row"><span>交易筆數</span><span id="repCount">0 筆</span></div>
+            <div class="report-stat-row"><span>總營業額</span></div>
+            <div class="report-total" id="repTotal">$0</div>
+            <hr style="border:0; border-top:1px solid #333; margin:15px 0;">
+            <label>各支付方式佔比</label>
+            <div id="repPayments" style="font-size:13px; margin-bottom:15px;"></div>
+            <label>設計師排行</label>
+            <div id="repStaffRank"></div>
+        </div>
     </div>
 </div>
 
 <script>
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyCOhBN9TH3UJSOSx5XVyQ08f_2RUckvXYU",
-  authDomain: "holyhairsalon-f73bf.firebaseapp.com",
-  databaseURL: "https://holyhairsalon-f73bf-default-rtdb.firebaseio.com",
-  projectId: "holyhairsalon-f73bf",
-  storageBucket: "holyhairsalon-f73bf.firebasestorage.app",
-  messagingSenderId: "960169055224",
-  appId: "1:960169055224:web:ab3b0c2ddb0a9082bf3c0d",
-  measurementId: "G-33P45H8H9Q"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+    const firebaseConfig = {
+        apiKey: "AIzaSyCOhBN9TH3UJSOSx5XVyQ08f_2RUckvXYU",
+        authDomain: "holyhairsalon-f73bf.firebaseapp.com",
+        databaseURL: "https://holyhairsalon-f73bf-default-rtdb.firebaseio.com",
+        projectId: "holyhairsalon-f73bf",
+        storageBucket: "holyhairsalon-f73bf.firebasestorage.app",
+        messagingSenderId: "960169055224",
+        appId: "1:960169055224:web:2a5dafd9bf2f1230bf3c0d"
+    };
 
     firebase.initializeApp(firebaseConfig);
     const rdb = firebase.database();
+
+    let currentMember = null;
 
     function openTab(evt, tabName) {
         let contents = document.getElementsByClassName("tab-content");
@@ -170,130 +159,144 @@ const analytics = getAnalytics(app);
         let buttons = document.getElementsByClassName("tab-button");
         for (let b of buttons) b.classList.remove("active");
         document.getElementById(tabName).style.display = "block";
-        evt.currentTarget.classList.add("active");
+        if(evt) evt.currentTarget.classList.add("active");
     }
 
-   async function submitSale() {
-    const phone = document.getElementById('customer_phone').value.trim();
-    const staff = document.getElementById('staff').value.trim();
-    const amount = Number(document.getElementById('amount').value);
-    const payment = document.getElementById('payment').value;
-    const res = document.getElementById('saleResult');
+    function goToStep(step) {
+        document.getElementById('step1').style.display = (step === 1) ? 'block' : 'none';
+        document.getElementById('step2').style.display = (step === 2) ? 'block' : 'none';
+    }
 
-    if(!phone || !amount || !staff) return alert("請完整填寫交易資訊");
-    res.style.display = 'block';
-    res.innerHTML = "💎 正在連接 LUXE 會員資料庫...";
-
-    try {
-        // 1. 從 members 資料夾找人 (與 card 系統同步)
-        const snapshot = await rdb.ref('members').orderByChild('phone').equalTo(phone).once('value');
-        
-        if (!snapshot.exists()) { 
-            res.innerHTML = "❌ 錯誤：找不到此手機號碼的會員檔案"; 
-            return; 
-        }
-
-        const memberKey = Object.keys(snapshot.val())[0];
-        const memberData = snapshot.val()[memberKey];
-        let currentBalance = Number(memberData.balance || 0);
-
-        // 2. 判斷支付方式
-        if (payment === "儲值金") {
-            if (currentBalance < amount) { 
-                res.innerHTML = `❌ 餘額不足<br>目前剩餘：$${currentBalance}`; 
-                return; 
+    async function checkMemberQuickly() {
+        const phone = document.getElementById('customer_phone').value.trim();
+        if (phone.length >= 10) {
+            const snapshot = await rdb.ref('members').orderByChild('phone').equalTo(phone).once('value');
+            if (snapshot.exists()) {
+                const id = Object.keys(snapshot.val())[0];
+                currentMember = { id, ...snapshot.val()[id] };
+                document.getElementById('briefName').innerText = currentMember.name;
+                document.getElementById('briefBalance').innerText = "$" + (currentMember.balance || 0);
+                document.getElementById('finalName').innerText = currentMember.name;
+                document.getElementById('memberBrief').style.display = 'block';
+                document.getElementById('btnNext').style.display = 'block';
+            } else {
+                document.getElementById('memberBrief').style.display = 'none';
+                document.getElementById('btnNext').style.display = 'none';
             }
-            currentBalance -= amount; // 執行扣款
         }
-
-        // 3. 產生歷史紀錄 (讓 card 系統點進去也能看到這筆)
-        const dateFull = new Date().toLocaleString('zh-TW', {hour12:false});
-        const newHistoryItem = {
-            date: dateFull.split(' ')[0],
-            fullTime: dateFull,
-            type: "消費",
-            amount: amount,
-            note: `[POS收銀] 設計師:${staff} (${payment})`,
-            afterBalance: currentBalance
-        };
-
-        let history = memberData.history || [];
-        history.unshift(newHistoryItem);
-
-        // 4. 同步更新 Firebase (members 資料夾)
-        await rdb.ref(`members/${memberKey}`).update({
-            balance: currentBalance,
-            history: history.slice(0, 50),
-            lastUpdate: Date.now()
-        });
-
-        // 5. 同時寫入 POS 業績日誌
-        await rdb.ref('pos_sales_log').push({
-            phone, staff, amount, payment, 
-            customerName: memberData.name,
-            timestamp: Date.now()
-        });
-
-        res.innerHTML = `✅ 交易成功！<br>貴賓：${memberData.name}<br>餘額：<span style="color:var(--gold-bright)">$${currentBalance}</span>`;
-        document.getElementById('amount').value = "";
-        
-    } catch (e) { 
-        res.innerHTML = "❌ 系統錯誤: " + e.message; 
     }
-}
 
-    async function fetchReport(type) {
-        const res = document.getElementById('queryResult');
-        const qStaff = document.getElementById('q-staff').value;
+    async function submitSale() {
+        const staff = document.getElementById('staff').value.trim();
+        const amount = Number(document.getElementById('amount').value);
+        const payment = document.getElementById('payment').value;
+        const res = document.getElementById('saleResult');
+
+        if (!staff || !amount) return alert("請完整輸入內容");
         res.style.display = 'block';
-        res.innerHTML = "⏳ 正在彙整 LUXE 業績數據...";
+        res.innerHTML = "💎 處理中...";
 
         try {
-            const snapshot = await rdb.ref('pos_sales_log').once('value');
-            if (!snapshot.exists()) { res.innerHTML = "📭 目前尚無任何交易數據"; return; }
+            let balance = Number(currentMember.balance || 0);
+            if (payment === "儲值金") {
+                if (balance < amount) { res.innerHTML = "❌ 餘額不足"; return; }
+                balance -= amount;
+            }
 
-            let total = 0, count = 0;
-            let staffStats = {};
             const now = new Date();
-            
-            snapshot.forEach(child => {
-                const data = child.val();
-                const txDate = new Date(data.timestamp);
-                let isMatch = false;
+            const fullTime = now.toLocaleString('zh-TW', {hour12:false});
+            const historyItem = {
+                date: fullTime.split(' ')[0], fullTime,
+                type: "消費", amount,
+                note: `[POS] ${staff} (${payment})`, afterBalance: balance
+            };
 
-                if (type === 'day') {
-                    if (txDate.toDateString() === now.toDateString()) isMatch = true;
-                } else if (type === 'week') {
-                    if ((now - txDate) / (1000*60*60*24) <= 7) isMatch = true;
-                } else if (type === 'month') {
-                    if (txDate.getMonth() === now.getMonth() && txDate.getFullYear() === now.getFullYear()) isMatch = true;
-                } else if (type === 'staff') {
-                    if (data.staff === qStaff) isMatch = true;
-                }
+            let history = currentMember.history || [];
+            history.unshift(historyItem);
 
-                if (isMatch) {
-                    total += data.amount;
-                    count++;
-                    staffStats[data.staff] = (staffStats[data.staff] || 0) + data.amount;
-                }
+            await rdb.ref(`members/${currentMember.id}`).update({
+                balance: balance, history: history.slice(0, 50), lastUpdate: Date.now()
             });
 
-            let title = { 'day':'今日結算', 'week':'週業績統計', 'month':'月營收摘要', 'staff':`${qStaff} 業績` }[type];
-            let html = `<b style="color:var(--gold-bright); font-size:18px;">📈 ${title}</b><br>`;
-            html += `總計筆數：${count} 筆<br>`;
-            html += `總營業額：<span style="color:var(--gold-bright); font-size:20px;">$${total}</span><br>`;
-            html += `<div class="hr-gold"></div><b>設計師貢獻排行：</b><br>`;
-            
-            const sorted = Object.entries(staffStats).sort((a,b) => b[1]-a[1]);
-            sorted.forEach(([name, amt], i) => {
-                html += `<div class="rank-item"><span>${i+1}. ${name}</span><span>$${amt}</span></div>`;
+            await rdb.ref('pos_sales_log').push({
+                phone: currentMember.phone, customerName: currentMember.name,
+                staff, amount, payment, timestamp: Date.now()
             });
 
-            res.innerHTML = html;
-        } catch (e) { res.innerHTML = "❌ 報表生成失敗"; }
+            res.innerHTML = `✅ 扣款成功！<br>剩餘餘額：$${balance}`;
+            setTimeout(() => {
+                location.reload(); // 成功後刷新重置
+            }, 2500);
+        } catch (e) { res.innerHTML = "錯誤: " + e.message; }
+    }
+
+    // 業績查詢 (個人)
+    async function fetchStaffReport() {
+        const staffName = document.getElementById('q-staff').value.trim();
+        const resultDiv = document.getElementById('staffResult');
+        if(!staffName) return alert("請輸入名稱");
+        
+        resultDiv.innerHTML = "查詢中...";
+        const snapshot = await rdb.ref('pos_sales_log').once('value');
+        let total = 0, count = 0;
+        
+        snapshot.forEach(c => {
+            const d = c.val();
+            if(d.staff === staffName) { total += d.amount; count++; }
+        });
+
+        resultDiv.innerHTML = `
+            <div class="report-card">
+                <div style="color:var(--gold-bright)">${staffName} 的業績</div>
+                <div class="report-total">$${total}</div>
+                <div style="text-align:center">服務總人次：${count} 位</div>
+            </div>`;
+    }
+
+    // 週期報表 (全店)
+    async function fetchPeriodicReport(type) {
+        // 切換按鈕樣式
+        ['btnDay', 'btnWeek', 'btnMonth'].forEach(id => document.getElementById(id).classList.remove('active'));
+        document.getElementById('btn' + type.charAt(0).toUpperCase() + type.slice(1)).classList.add('active');
+
+        const snapshot = await rdb.ref('pos_sales_log').once('value');
+        const now = new Date();
+        let total = 0, count = 0;
+        let staffMap = {}, payMap = {};
+
+        snapshot.forEach(c => {
+            const d = c.val();
+            const t = new Date(d.timestamp);
+            let match = false;
+
+            if (type === 'day' && t.toDateString() === now.toDateString()) match = true;
+            if (type === 'week' && (now - t) < 7*24*60*60*1000) match = true;
+            if (type === 'month' && t.getMonth() === now.getMonth() && t.getFullYear() === now.getFullYear()) match = true;
+
+            if (match) {
+                total += d.amount;
+                count++;
+                staffMap[d.staff] = (staffMap[d.staff] || 0) + d.amount;
+                payMap[d.payment] = (payMap[d.payment] || 0) + d.amount;
+            }
+        });
+
+        document.getElementById('reportTitle').innerText = (type==='day'?'今日全店營收':type==='week'?'本週累計營收':'本月累計營收');
+        document.getElementById('repCount').innerText = count + " 筆";
+        document.getElementById('repTotal').innerText = "$" + total;
+
+        // 支付佔比
+        let payHtml = "";
+        for (let p in payMap) payHtml += `<div>${p}: $${payMap[p]}</div>`;
+        document.getElementById('repPayments').innerHTML = payHtml || "無數據";
+
+        // 排行
+        let staffHtml = "";
+        Object.entries(staffMap).sort((a,b)=>b[1]-a[1]).forEach(([n, v], i) => {
+            staffHtml += `<div class="rank-item"><span>${i+1}. ${n}</span><span>$${v}</span></div>`;
+        });
+        document.getElementById('repStaffRank').innerHTML = staffHtml || "無數據";
     }
 </script>
 </body>
 </html>
-
-
