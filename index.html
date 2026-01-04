@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LUXE POS | 奢華收銀系統</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
     <style>
         :root {
             --bg-black: #0a0a0a;
@@ -22,15 +26,15 @@
             justify-content: center;
             align-items: flex-start;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* 手機尺寸容器 */
+        /* 手機尺寸容器 - 呼吸發光邊框 */
         .container {
             width: 100%;
             max-width: 450px;
-            padding: 20px;
+            padding: 25px;
             box-sizing: border-box;
-            /* 呼吸發光邊框效果 */
             border: 1px solid var(--gold-dark);
             box-shadow: 0 0 15px rgba(140, 109, 31, 0.3);
             animation: breathe 5s infinite alternate;
@@ -46,12 +50,13 @@
         h1 {
             text-align: center;
             font-size: 24px;
-            letter-spacing: 4px;
+            letter-spacing: 5px;
             text-shadow: 0 2px 4px rgba(0,0,0,0.5);
             margin-bottom: 30px;
+            color: var(--gold-bright);
         }
 
-        /* 導覽分頁 */
+        /* 導覽分頁切換 */
         .tabs {
             display: flex;
             gap: 10px;
@@ -63,67 +68,76 @@
             background: transparent;
             border: 1px solid var(--gold-dark);
             color: var(--gold-dark);
-            padding: 10px 5px;
-            font-size: 13px;
+            padding: 12px 5px;
+            font-size: 14px;
             cursor: pointer;
             transition: 0.3s;
+            border-radius: 4px;
         }
 
         .tab-button.active {
             background: var(--gold-dark);
             color: var(--bg-black);
             font-weight: bold;
+            box-shadow: 0 0 10px var(--gold-dark);
         }
 
         /* 表單設計 */
-        label { font-size: 14px; color: var(--gold-bright); margin-bottom: 8px; display: block; }
+        label { font-size: 14px; color: var(--gold-bright); margin-bottom: 8px; display: block; letter-spacing: 1px; }
 
         input, select {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             margin-bottom: 20px;
-            background: #222;
+            background: #1a1a1a;
             border: 1px solid #333;
             border-radius: 4px;
             color: #fff;
             box-sizing: border-box;
             outline: none;
+            font-size: 16px;
         }
 
-        input:focus { border-color: var(--gold-bright); }
+        input:focus { border-color: var(--gold-bright); background: #222; }
 
-        /* 4秒週期發光按鈕 */
+        /* 4秒週期發光按鈕 (從暗金轉亮金) */
         .btn-luxe {
             width: 100%;
-            padding: 15px;
+            padding: 16px;
             border: none;
-            border-radius: 2px;
+            border-radius: 4px;
             font-weight: bold;
             font-size: 18px;
             cursor: pointer;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             color: #000;
             background: linear-gradient(45deg, var(--gold-dark), var(--gold-bright));
             animation: goldPulse 4s infinite ease-in-out;
+            margin-top: 10px;
         }
 
         @keyframes goldPulse {
-            0% { background: var(--gold-dark); box-shadow: 0 0 5px rgba(140, 109, 31, 0.5); }
-            50% { background: var(--gold-bright); box-shadow: 0 0 20px rgba(212, 175, 55, 0.8); }
-            100% { background: var(--gold-dark); box-shadow: 0 0 5px rgba(140, 109, 31, 0.5); }
+            0% { background: var(--gold-dark); box-shadow: 0 0 5px rgba(140, 109, 31, 0.5); filter: brightness(0.9); }
+            50% { background: var(--gold-bright); box-shadow: 0 0 20px rgba(212, 175, 55, 0.8); filter: brightness(1.2); }
+            100% { background: var(--gold-dark); box-shadow: 0 0 5px rgba(140, 109, 31, 0.5); filter: brightness(0.9); }
         }
 
         .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        .tab-content.active { display: block; animation: fadeIn 0.5s; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .result-box {
-            margin-top: 20px;
+            margin-top: 25px;
             padding: 15px;
-            border-left: 3px solid var(--gold-bright);
+            border: 1px solid var(--gold-dark);
             background: rgba(212, 175, 55, 0.05);
             font-size: 14px;
             display: none;
+            text-align: center;
+            border-radius: 4px;
+            line-height: 1.6;
         }
     </style>
 </head>
@@ -139,20 +153,20 @@
     </div>
 
     <div id="sale" class="tab-content active">
-        <label>客戶名稱</label>
-        <input type="text" id="customer" placeholder="輸入貴賓姓名">
+        <label>客戶姓名</label>
+        <input type="text" id="customer" placeholder="輸入貴賓尊稱">
 
         <label>服務設計師</label>
-        <input type="text" id="staff" placeholder="輸入設計師">
+        <input type="text" id="staff" placeholder="輸入設計師姓名">
 
         <label>消費金額</label>
-        <input type="number" id="amount" placeholder="0">
+        <input type="number" id="amount" placeholder="輸入交易總額">
 
         <label>支付方式</label>
         <select id="payment">
-            <option>現金</option>
-            <option>信用卡</option>
-            <option>行動支付</option>
+            <option value="現金">現金 (Cash)</option>
+            <option value="信用卡">信用卡 (Credit Card)</option>
+            <option value="行動支付">行動支付 (Mobile Pay)</option>
         </select>
 
         <button class="btn-luxe" onclick="submitSale()">提交交易</button>
@@ -160,84 +174,120 @@
     </div>
 
     <div id="query" class="tab-content">
-        <label>設計師姓名</label>
-        <input type="text" id="q-staff">
-        <button class="btn-luxe">開始查詢</button>
+        <label>查詢設計師</label>
+        <input type="text" id="q-staff" placeholder="輸入要查詢的設計師">
+        <button class="btn-luxe" onclick="querySales()">開始查詢</button>
+        <div id="queryResult" class="result-box"></div>
+    </div>
+
+    <div id="bill" class="tab-content">
+        <label>查詢發票號碼</label>
+        <input type="text" placeholder="輸入單號">
+        <button class="btn-luxe">搜尋紀錄</button>
     </div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
 <script>
-  // 這裡貼上你 image_f47b46.jpg 中的配置資訊
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+    // --- Firebase 配置 (來自你的截圖 holyhairsalon-f73bf) ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyCOhBN9TH3UJSOSx5XVyQ08f_2RUckvXYU",
+        authDomain: "holyhairsalon-f73bf.firebaseapp.com",
+        databaseURL: "https://holyhairsalon-f73bf-default-rtdb.firebaseio.com",
+        projectId: "holyhairsalon-f73bf",
+        storageBucket: "holyhairsalon-f73bf.firebasestorage.app",
+        messagingSenderId: "960169055224",
+        appId: "1:960169055224:web:ab3b0c2ddb0a9082bf3c0d",
+        measurementId: "G-33P45H8H9Q"
+    };
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyCOhBN9TH3UJSOSx5XVyQ08f_2RUckvXYU",
-  authDomain: "holyhairsalon-f73bf.firebaseapp.com",
-  databaseURL: "https://holyhairsalon-f73bf-default-rtdb.firebaseio.com",
-  projectId: "holyhairsalon-f73bf",
-  storageBucket: "holyhairsalon-f73bf.firebasestorage.app",
-  messagingSenderId: "960169055224",
-  appId: "1:960169055224:web:ab3b0c2ddb0a9082bf3c0d",
-  measurementId: "G-33P45H8H9Q"
-};
+    // 初始化 Firebase (Compat 版語法)
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-  // 初始化 Firebase
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-
-  // 分頁切換功能
-  function openTab(evt, tabName) {
-    let contents = document.getElementsByClassName("tab-content");
-    for (let c of contents) c.classList.remove("active");
-    let buttons = document.getElementsByClassName("tab-button");
-    for (let b of buttons) b.classList.remove("active");
-    document.getElementById(tabName).classList.add("active");
-    evt.currentTarget.classList.add("active");
-  }
-
-  // 真正的 Firebase 提交功能
-  async function submitSale() {
-    const res = document.getElementById('saleResult');
-    res.style.display = 'block';
-    res.innerHTML = "💎 奢華加密傳輸中...";
-
-    // 抓取表單欄位值
-    const customer = document.getElementById('customer').value;
-    const staff = document.getElementById('staff').value;
-    const amount = document.getElementById('amount').value;
-    const payment = document.getElementById('payment').value;
-
-    try {
-      // 將資料存入 Firebase 的 'sales' 集合
-      await db.collection("sales").add({
-        customer: customer,
-        staff: staff,
-        amount: Number(amount),
-        payment: payment,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      });
-
-      res.innerHTML = "✅ 交易已成功載入雲端數據庫";
-      // 清空表單
-      document.getElementById('customer').value = "";
-      document.getElementById('amount').value = "";
-    } catch (error) {
-      console.error("錯誤：", error);
-      res.innerHTML = "❌ 傳輸失敗：" + error.message;
+    // --- 介面功能：切換分頁 ---
+    function openTab(evt, tabName) {
+        let contents = document.getElementsByClassName("tab-content");
+        for (let c of contents) c.classList.remove("active");
+        
+        let buttons = document.getElementsByClassName("tab-button");
+        for (let b of buttons) b.classList.remove("active");
+        
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+        
+        // 切換時隱藏結果框
+        document.getElementById('saleResult').style.display = 'none';
+        document.getElementById('queryResult').style.display = 'none';
     }
-  }
+
+    // --- 核心功能：提交交易至 Firebase ---
+    async function submitSale() {
+        const res = document.getElementById('saleResult');
+        const customer = document.getElementById('customer').value;
+        const staff = document.getElementById('staff').value;
+        const amount = document.getElementById('amount').value;
+        const payment = document.getElementById('payment').value;
+
+        if (!customer || !amount || !staff) {
+            res.style.display = 'block';
+            res.innerHTML = "❌ <span style='color:#ff4d4d'>請完整填寫客戶、設計師與金額</span>";
+            return;
+        }
+
+        res.style.display = 'block';
+        res.innerHTML = "💎 <span style='color:var(--gold-bright)'>奢華加密傳輸中...</span>";
+
+        try {
+            // 寫入 Firestore 集合 'sales'
+            await db.collection("sales").add({
+                customer: customer,
+                staff: staff,
+                amount: Number(amount),
+                payment: payment,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            res.innerHTML = "✅ <span style='color:white'>交易成功！已存入雲端數據庫</span>";
+            // 清空輸入欄
+            document.getElementById('customer').value = "";
+            document.getElementById('amount').value = "";
+        } catch (error) {
+            console.error("Firebase 錯誤:", error);
+            res.innerHTML = "❌ <span style='color:#ff4d4d'>傳輸失敗: " + error.message + "</span>";
+        }
+    }
+
+    // --- 擴充功能：簡單查詢 (示範) ---
+    async function querySales() {
+        const qStaff = document.getElementById('q-staff').value;
+        const res = document.getElementById('queryResult');
+        if (!qStaff) return;
+
+        res.style.display = 'block';
+        res.innerHTML = "正在調閱紀錄...";
+
+        try {
+            const snapshot = await db.collection("sales")
+                .where("staff", "==", qStaff)
+                .orderBy("timestamp", "desc")
+                .limit(5)
+                .get();
+
+            if (snapshot.empty) {
+                res.innerHTML = "查無此設計師的近代紀錄。";
+                return;
+            }
+
+            let html = `<b>${qStaff} 的近期業績：</b><br>`;
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                html += `💰 $${data.amount} (${data.payment})<br>`;
+            });
+            res.innerHTML = html;
+        } catch (error) {
+            res.innerHTML = "查詢受限: " + error.message;
+        }
+    }
 </script>
 
 </body>
