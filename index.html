@@ -11,285 +11,212 @@
     <style>
         :root {
             --bg-black: #0a0a0a;
-            --card-gray: #1a1a1a;
             --gold-bright: #d4af37;
             --gold-dark: #8c6d1f;
             --text-gold: #f3e5ab;
+            --danger: #802020;
         }
 
         body {
             background-color: var(--bg-black);
             color: var(--text-gold);
-            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            overflow-x: hidden;
+            font-family: 'PingFang TC', sans-serif;
+            margin: 0; display: flex; justify-content: center;
         }
 
-        /* 手機尺寸容器 - 呼吸發光邊框 */
         .container {
-            width: 100%;
-            max-width: 450px;
-            padding: 25px;
-            box-sizing: border-box;
+            width: 100%; max-width: 450px; padding: 25px; box-sizing: border-box;
             border: 1px solid var(--gold-dark);
-            box-shadow: 0 0 15px rgba(140, 109, 31, 0.3);
             animation: breathe 5s infinite alternate;
             min-height: 100vh;
             background: linear-gradient(145deg, #111, #050505);
         }
 
         @keyframes breathe {
-            from { box-shadow: 0 0 10px rgba(140, 109, 31, 0.2); border-color: #5c4815; }
+            from { box-shadow: 0 0 10px rgba(140, 109, 31, 0.2); }
             to { box-shadow: 0 0 25px rgba(212, 175, 55, 0.5); border-color: var(--gold-bright); }
         }
 
-        h1 {
-            text-align: center;
-            font-size: 24px;
-            letter-spacing: 5px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-            margin-bottom: 30px;
-            color: var(--gold-bright);
-        }
+        h1 { text-align: center; letter-spacing: 5px; color: var(--gold-bright); }
 
-        /* 導覽分頁切換 */
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-        }
-
+        /* 分頁切換 */
+        .tabs { display: flex; gap: 10px; margin-bottom: 25px; }
         .tab-button {
-            flex: 1;
-            background: transparent;
-            border: 1px solid var(--gold-dark);
-            color: var(--gold-dark);
-            padding: 12px 5px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: 0.3s;
-            border-radius: 4px;
+            flex: 1; background: transparent; border: 1px solid var(--gold-dark);
+            color: var(--gold-dark); padding: 12px 5px; cursor: pointer; border-radius: 4px;
         }
+        .tab-button.active { background: var(--gold-dark); color: #000; font-weight: bold; }
 
-        .tab-button.active {
-            background: var(--gold-dark);
-            color: var(--bg-black);
-            font-weight: bold;
-            box-shadow: 0 0 10px var(--gold-dark);
-        }
-
-        /* 表單設計 */
-        label { font-size: 14px; color: var(--gold-bright); margin-bottom: 8px; display: block; letter-spacing: 1px; }
-
+        /* 表單元件 */
+        label { font-size: 14px; color: var(--gold-bright); margin-bottom: 8px; display: block; }
         input, select {
-            width: 100%;
-            padding: 14px;
-            margin-bottom: 20px;
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 4px;
-            color: #fff;
-            box-sizing: border-box;
-            outline: none;
-            font-size: 16px;
+            width: 100%; padding: 14px; margin-bottom: 20px; background: #1a1a1a;
+            border: 1px solid #333; color: #fff; border-radius: 4px; box-sizing: border-box;
         }
 
-        input:focus { border-color: var(--gold-bright); background: #222; }
-
-        /* 4秒週期發光按鈕 (從暗金轉亮金) */
+        /* 4秒週期發光按鈕 */
         .btn-luxe {
-            width: 100%;
-            padding: 16px;
-            border: none;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 18px;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: #000;
+            width: 100%; padding: 16px; border: none; border-radius: 4px; font-weight: bold;
+            font-size: 18px; cursor: pointer; letter-spacing: 3px; color: #000;
             background: linear-gradient(45deg, var(--gold-dark), var(--gold-bright));
             animation: goldPulse 4s infinite ease-in-out;
-            margin-top: 10px;
         }
 
+        /* 刪除專用按鈕 (紅金質感) */
+        .btn-delete {
+            width: 100%; padding: 10px; margin-top: 15px; border: 1px solid var(--danger);
+            background: transparent; color: #ffbcbc; cursor: pointer; font-size: 13px;
+            border-radius: 4px; transition: 0.3s;
+        }
+        .btn-delete:hover { background: var(--danger); color: white; }
+
         @keyframes goldPulse {
-            0% { background: var(--gold-dark); box-shadow: 0 0 5px rgba(140, 109, 31, 0.5); filter: brightness(0.9); }
-            50% { background: var(--gold-bright); box-shadow: 0 0 20px rgba(212, 175, 55, 0.8); filter: brightness(1.2); }
-            100% { background: var(--gold-dark); box-shadow: 0 0 5px rgba(140, 109, 31, 0.5); filter: brightness(0.9); }
+            0%, 100% { filter: brightness(0.9); box-shadow: 0 0 5px var(--gold-dark); }
+            50% { filter: brightness(1.2); box-shadow: 0 0 20px var(--gold-bright); }
         }
 
         .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.5s; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
+        .tab-content.active { display: block; }
         .result-box {
-            margin-top: 25px;
-            padding: 15px;
-            border: 1px solid var(--gold-dark);
-            background: rgba(212, 175, 55, 0.05);
-            font-size: 14px;
-            display: none;
-            text-align: center;
-            border-radius: 4px;
-            line-height: 1.6;
+            margin-top: 25px; padding: 15px; border: 1px solid var(--gold-dark);
+            background: rgba(212, 175, 55, 0.05); border-radius: 4px; display: none;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>👑銷售POS系統</h1>
+    <h1>👑 LUXE POS</h1>
 
     <div class="tabs">
-        <button class="tab-button active" onclick="openTab(event, 'sale')">快速收銀</button>
-        <button class="tab-button" onclick="openTab(event, 'query')">業績查詢</button>
-        <button class="tab-button" onclick="openTab(event, 'bill')">帳單管理</button>
+        <button class="tab-button active" onclick="openTab(event, 'sale')">收銀</button>
+        <button class="tab-button" onclick="openTab(event, 'query')">業績</button>
+        <button class="tab-button" onclick="openTab(event, 'bill')">管理</button>
     </div>
 
     <div id="sale" class="tab-content active">
         <label>客戶姓名</label>
         <input type="text" id="customer" placeholder="輸入貴賓尊稱">
-
         <label>服務設計師</label>
         <input type="text" id="staff" placeholder="輸入設計師姓名">
-
         <label>消費金額</label>
-        <input type="number" id="amount" placeholder="輸入交易總額">
-
+        <input type="number" id="amount" placeholder="0">
         <label>支付方式</label>
         <select id="payment">
-            <option value="現金">現金 (Cash)</option>
-            <option value="信用卡">信用卡 (Credit Card)</option>
-            <option value="行動支付">行動支付 (Mobile Pay)</option>
+            <option>現金</option>
+            <option>信用卡</option>
+            <option>行動支付</option>
         </select>
-
         <button class="btn-luxe" onclick="submitSale()">提交交易</button>
+        
+        <button class="btn-delete" onclick="deleteLastSale()">⚠️ 刪除最近一筆交易</button>
+        
         <div id="saleResult" class="result-box"></div>
     </div>
 
     <div id="query" class="tab-content">
         <label>查詢設計師</label>
-        <input type="text" id="q-staff" placeholder="輸入要查詢的設計師">
+        <input type="text" id="q-staff" placeholder="輸入姓名">
         <button class="btn-luxe" onclick="querySales()">開始查詢</button>
         <div id="queryResult" class="result-box"></div>
-    </div>
-
-    <div id="bill" class="tab-content">
-        <label>查詢發票號碼</label>
-        <input type="text" placeholder="輸入單號">
-        <button class="btn-luxe">搜尋紀錄</button>
     </div>
 </div>
 
 <script>
-    // --- Firebase 配置 (來自你的截圖 holyhairsalon-f73bf) ---
     const firebaseConfig = {
         apiKey: "AIzaSyCOhBN9TH3UJSOSx5XVyQ08f_2RUckvXYU",
         authDomain: "holyhairsalon-f73bf.firebaseapp.com",
-        databaseURL: "https://holyhairsalon-f73bf-default-rtdb.firebaseio.com",
         projectId: "holyhairsalon-f73bf",
         storageBucket: "holyhairsalon-f73bf.firebasestorage.app",
         messagingSenderId: "960169055224",
-        appId: "1:960169055224:web:ab3b0c2ddb0a9082bf3c0d",
-        measurementId: "G-33P45H8H9Q"
+        appId: "1:960169055224:web:ab3b0c2ddb0a9082bf3c0d"
     };
 
-    // 初始化 Firebase (Compat 版語法)
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // --- 介面功能：切換分頁 ---
     function openTab(evt, tabName) {
         let contents = document.getElementsByClassName("tab-content");
         for (let c of contents) c.classList.remove("active");
-        
         let buttons = document.getElementsByClassName("tab-button");
         for (let b of buttons) b.classList.remove("active");
-        
         document.getElementById(tabName).classList.add("active");
         evt.currentTarget.classList.add("active");
-        
-        // 切換時隱藏結果框
-        document.getElementById('saleResult').style.display = 'none';
-        document.getElementById('queryResult').style.display = 'none';
     }
 
-    // --- 核心功能：提交交易至 Firebase ---
+    // 提交交易
     async function submitSale() {
         const res = document.getElementById('saleResult');
-        const customer = document.getElementById('customer').value;
-        const staff = document.getElementById('staff').value;
-        const amount = document.getElementById('amount').value;
-        const payment = document.getElementById('payment').value;
+        const data = {
+            customer: document.getElementById('customer').value,
+            staff: document.getElementById('staff').value,
+            amount: Number(document.getElementById('amount').value),
+            payment: document.getElementById('payment').value,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        };
 
-        if (!customer || !amount || !staff) {
-            res.style.display = 'block';
-            res.innerHTML = "❌ <span style='color:#ff4d4d'>請完整填寫客戶、設計師與金額</span>";
-            return;
-        }
+        if(!data.customer || !data.amount) return alert("欄位未填完");
 
         res.style.display = 'block';
-        res.innerHTML = "💎 <span style='color:var(--gold-bright)'>奢華加密傳輸中...</span>";
+        res.innerHTML = "💎 傳輸中...";
+        try {
+            await db.collection("sales").add(data);
+            res.innerHTML = "✅ 交易已存入雲端";
+            document.getElementById('amount').value = "";
+        } catch (e) { res.innerHTML = "❌ 失敗: " + e.message; }
+    }
+
+    // 新增功能：刪除最近一筆交易
+    async function deleteLastSale() {
+        if(!confirm("確定要刪除「最後一筆」錄入的資料嗎？")) return;
+        
+        const res = document.getElementById('saleResult');
+        res.style.display = 'block';
+        res.innerHTML = "正在定位最後一筆資料...";
 
         try {
-            // 寫入 Firestore 集合 'sales'
-            await db.collection("sales").add({
-                customer: customer,
-                staff: staff,
-                amount: Number(amount),
-                payment: payment,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            });
+            const snapshot = await db.collection("sales")
+                .orderBy("timestamp", "desc")
+                .limit(1)
+                .get();
 
-            res.innerHTML = "✅ <span style='color:white'>交易成功！已存入雲端數據庫</span>";
-            // 清空輸入欄
-            document.getElementById('customer').value = "";
-            document.getElementById('amount').value = "";
-        } catch (error) {
-            console.error("Firebase 錯誤:", error);
-            res.innerHTML = "❌ <span style='color:#ff4d4d'>傳輸失敗: " + error.message + "</span>";
+            if (snapshot.empty) {
+                res.innerHTML = "資料庫目前沒有任何紀錄。";
+                return;
+            }
+
+            const lastDocId = snapshot.docs[0].id;
+            await db.collection("sales").doc(lastDocId).delete();
+            res.innerHTML = "🗑️ 最後一筆交易已成功刪除。";
+        } catch (e) {
+            res.innerHTML = "❌ 刪除失敗: " + e.message;
         }
     }
 
-    // --- 擴充功能：簡單查詢 (示範) ---
+    // 業績查詢 + 累計
     async function querySales() {
         const qStaff = document.getElementById('q-staff').value;
         const res = document.getElementById('queryResult');
-        if (!qStaff) return;
-
         res.style.display = 'block';
-        res.innerHTML = "正在調閱紀錄...";
+        res.innerHTML = "調閱中...";
 
         try {
             const snapshot = await db.collection("sales")
                 .where("staff", "==", qStaff)
-                .orderBy("timestamp", "desc")
-                .limit(5)
                 .get();
 
-            if (snapshot.empty) {
-                res.innerHTML = "查無此設計師的近代紀錄。";
-                return;
-            }
-
-            let html = `<b>${qStaff} 的近期業績：</b><br>`;
+            let total = 0;
+            let count = 0;
             snapshot.forEach(doc => {
-                const data = doc.data();
-                html += `💰 $${data.amount} (${data.payment})<br>`;
+                total += doc.data().amount;
+                count++;
             });
-            res.innerHTML = html;
-        } catch (error) {
-            res.innerHTML = "查詢受限: " + error.message;
-        }
+
+            res.innerHTML = `<b>${qStaff} 業績簡報：</b><br>
+                             總成交筆數：${count} 筆<br>
+                             總業績金額：<span style="color:var(--gold-bright)">$${total}</span>`;
+        } catch (e) { res.innerHTML = "錯誤: " + e.message; }
     }
 </script>
-
 </body>
 </html>
-
